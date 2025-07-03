@@ -7,13 +7,13 @@
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gray-50">
-<div x-data="{ open: false }" class="min-h-screen">
+<div x-data="{ open: false }" class="min-h-screen flex">
     <!-- Sidebar -->
     <x-sidebar-admin />
     <!-- Overlay for mobile -->
     <div x-show="open" class="fixed inset-0 bg-black bg-opacity-30 z-20 md:hidden" @click="open = false"></div>
     <!-- Main Content -->
-    <div class="min-h-screen md:ml-64">
+    <div class="flex-1 min-h-screen">
         <!-- Header (mobile only) -->
         <div class="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
             <div class="text-lg font-bold text-gray-800">Estetika.os</div>
