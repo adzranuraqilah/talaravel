@@ -15,9 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Jalankan seeder admin
+        $this->call(AdminUserSeeder::class);
+        
+        // Jalankan seeder galeri pratinjau
+        $this->call(GaleriPratinjauSeeder::class);
+        
+        // Jalankan seeder produk harga
+        $this->call(ProdukPriceSeeder::class);
+        
+        // Jalankan seeder pengaturan harga
+        $this->call(PricingSettingsSeeder::class);
     }
 }

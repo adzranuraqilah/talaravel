@@ -4,16 +4,20 @@
         <h2 class="text-4xl font-extrabold text-gray-700 mb-2">MASUK</h2>
         <p class="text-gray-600 text-base">Masuk untuk mengakses akunmu</p>
     </div>
-    <form class="space-y-6">
+    @if(session('error'))
+        <div class="mb-4 text-red-600 font-semibold">{{ session('error') }}</div>
+    @endif
+    <form class="space-y-6" method="POST" action="/login">
+        @csrf
         <div>
-            <input type="email" placeholder="Email" class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base">
+            <input type="email" name="email" placeholder="Email" class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base" required>
         </div>
         <div>
-            <input type="password" placeholder="Password" class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base">
+            <input type="password" name="password" placeholder="Password" class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base" required>
         </div>
         <div class="flex items-center justify-between">
             <label class="flex items-center gap-2">
-                <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                <input type="checkbox" name="remember" class="form-checkbox h-5 w-5 text-blue-600">
                 <span class="text-gray-700 text-base">Ingat Saya</span>
             </label>
             <a href="#" class="text-[#1e335f] text-base hover:underline">Lupa Password</a>

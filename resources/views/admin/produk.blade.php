@@ -1,331 +1,259 @@
 <x-layout-admin>
 <div class="px-6 pt-6">
-    <!-- Header & Tombol Tambah Produk -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-            <div class="text-2xl font-bold text-gray-800">Produk</div>
-            <div class="text-gray-500 text-sm">Selamat datang di Admin Panel Konveksi Estetika.os</div>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Daftar Produk</h1>
+        <a href="/admin/produk-tambah" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Tambah Produk
+        </a>
+    </div>
+
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
         </div>
-        <div class="mt-4 md:mt-0">
-            <a href="/admin/produk-tambah" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 bg-white hover:bg-gray-100 font-medium shadow-sm transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <!-- Search Bar -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Produk</label>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Cari berdasarkan nama produk, jenis bahan, warna..." 
+                           class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter Jenis Produk</label>
+                <select id="filterJenisProduk" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Semua Jenis</option>
+                    <option value="kaos">Kaos</option>
+                    <option value="hoodie">Hoodie</option>
+                    <option value="almamater">Almamater</option>
+                    <option value="kemeja">Kemeja</option>
+                    <option value="jaket">Jaket</option>
+                </select>
+            </div>
+            <div class="md:w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Filter Harga</label>
+                <select id="filterHarga" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Semua Harga</option>
+                    <option value="0-50000">≤ Rp 50.000</option>
+                    <option value="50000-100000">Rp 50.000 - 100.000</option>
+                    <option value="100000-150000">Rp 100.000 - 150.000</option>
+                    <option value="150000+">≥ Rp 150.000</option>
+                </select>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+            <div class="text-sm text-gray-600">
+                <span id="resultCount">0</span> produk ditemukan
+            </div>
+            <button id="clearSearch" class="text-gray-500 hover:text-gray-700 text-sm">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
-                Tambah Produk
-            </a>
+                Bersihkan Filter
+            </button>
         </div>
     </div>
-    <!-- Daftar Produk -->
-    <div class="bg-white border border-gray-200 rounded-xl p-6">
-        <div class="flex items-center gap-2 mb-4">
-            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/>
-            </svg>
-            <span class="text-lg font-semibold text-gray-700">Daftar Produk</span>
-        </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[900px] text-xs md:text-sm">
-                <thead>
-                    <tr class="border-b">
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">ID</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Jenis Produk</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Jenis Bahan</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Ukuran</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Sablon</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Warna Bahan</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Model Jahitan</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Waktu Pengerjaan</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Tambahan Lain</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Harga</th>
-                        <th class="py-2 px-4 text-left text-gray-600 font-semibold">Aksi</th>
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Produk</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Bahan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warna Bahan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ukuran</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sablon</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Warna</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Model Jahitan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tambahan Lain</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Pengerjaan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Produk 1 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-001</td>
-                        <td class="py-2 px-4">Kaos</td>
-                        <td class="py-2 px-4">Katun Combed</td>
-                        <td class="py-2 px-4">S</td>
-                        <td class="py-2 px-4">Bordir</td>
-                        <td class="py-2 px-4">Burgundy</td>
-                        <td class="py-2 px-4">Standard</td>
-                        <td class="py-2 px-4 text-blue-600 font-semibold"><a href="#" class="hover:underline">14 hari</a></td>
-                        <td class="py-2 px-4">Hangtag</td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 250.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <tbody class="bg-white divide-y divide-gray-200" id="productTableBody">
+                    @forelse($produks as $produk)
+                    <tr class="product-row" 
+                        data-jenis-produk="{{ strtolower($produk->nama_produk) }}"
+                        data-jenis-bahan="{{ strtolower($produk->jenis_bahan) }}"
+                        data-warna-bahan="{{ strtolower($produk->warna_bahan) }}"
+                        data-sablon="{{ strtolower($produk->sablon ?? '') }}"
+                        data-harga="{{ $produk->harga }}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $produk->id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                {{ ucfirst($produk->nama_produk) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produk->jenis_bahan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produk->warna_bahan }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            @if($produk->ukuran)
+                                @php $ukuran = is_string($produk->ukuran) ? json_decode($produk->ukuran, true) : $produk->ukuran; @endphp
+                                @if(is_array($ukuran))
+                                    @foreach($ukuran as $size)
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 mr-1">{{ $size }}</span>
+                                    @endforeach
+                                @else
+                                    {{ $produk->ukuran }}
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produk->sablon ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produk->jumlah_warna_sablon ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $produk->model_jahitan ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            @if($produk->tambahan_lain)
+                                @php $tambahan = is_string($produk->tambahan_lain) ? json_decode($produk->tambahan_lain, true) : $produk->tambahan_lain; @endphp
+                                @if(is_array($tambahan))
+                                    @foreach($tambahan as $item)
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 mr-1">{{ $item }}</span>
+                                    @endforeach
+                                @else
+                                    {{ $produk->tambahan_lain }}
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                {{ $produk->waktu_pengerjaan ?? '-' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
+                            Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="/admin/produk/{{ $produk->id }}/edit" class="text-blue-600 hover:text-blue-900 mr-3">
+                                <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </a>
+                            <form action="/admin/produk/{{ $produk->id }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">
+                                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                 </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
+                            </form>
                         </td>
                     </tr>
-                    <!-- Produk 2 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-002</td>
-                        <td class="py-2 px-4">Hoodie</td>
-                        <td class="py-2 px-4">Polyester</td>
-                        <td class="py-2 px-4">M</td>
-                        <td class="py-2 px-4">Sablon Plastisol</td>
-                        <td class="py-2 px-4">Maroon</td>
-                        <td class="py-2 px-4">Overdeck</td>
-                        <td class="py-2 px-4 text-blue-600 font-semibold"><a href="#" class="hover:underline">21 hari</a></td>
-                        <td class="py-2 px-4">Brand Label</td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 200.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 3 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-003</td>
-                        <td class="py-2 px-4">Almamater</td>
-                        <td class="py-2 px-4">Katun Bamboo</td>
-                        <td class="py-2 px-4">L</td>
-                        <td class="py-2 px-4">Sablon Rubber</td>
-                        <td class="py-2 px-4">Fuschia</td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4 text-blue-600 font-semibold"><a href="#" class="hover:underline">28 hari</a></td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 350.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 4 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-004</td>
-                        <td class="py-2 px-4">Kemeja</td>
-                        <td class="py-2 px-4">Supima</td>
-                        <td class="py-2 px-4">XL</td>
-                        <td class="py-2 px-4">Sablon DTG</td>
-                        <td class="py-2 px-4">Pink</td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4 text-blue-600 font-semibold"><a href="#" class="hover:underline">34 hari</a></td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 275.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 5 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-005</td>
-                        <td class="py-2 px-4">Jaket</td>
-                        <td class="py-2 px-4">Fleece</td>
-                        <td class="py-2 px-4">XXL</td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4">Dusty Rose</td>
-                        <td class="py-2 px-4">-</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 180.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 6 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-001</td>
-                        <td class="py-2 px-4">Babyterry</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4">Terracotta</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 250.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 7 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-002</td>
-                        <td class="py-2 px-4">Wol</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4">Orange</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 200.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 8 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-003</td>
-                        <td class="py-2 px-4">Drill</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4">Gold</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 350.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 9 -->
-                    <tr class="border-b">
-                        <td class="py-2 px-4">PRD-004</td>
-                        <td class="py-2 px-4">Nagata Drill</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4">Beige</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 275.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Produk 10 -->
+                    @empty
                     <tr>
-                        <td class="py-2 px-4">PRD-005</td>
-                        <td class="py-2 px-4">Linen</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4">Creme</td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4"></td>
-                        <td class="py-2 px-4 text-green-600 font-semibold">Rp 180.000</td>
-                        <td class="py-2 px-4">
-                            <div class="flex gap-2">
-                                <button class="p-2 rounded hover:bg-gray-100" title="Lihat">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                                <button class="p-2 rounded hover:bg-gray-100" title="Hapus">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                            </div>
+                        <td colspan="12" class="px-6 py-4 text-center text-gray-500">
+                            Tidak ada produk yang ditemukan
                         </td>
                     </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const filterJenisProduk = document.getElementById('filterJenisProduk');
+    const filterHarga = document.getElementById('filterHarga');
+    const clearSearch = document.getElementById('clearSearch');
+    const resultCount = document.getElementById('resultCount');
+    const productRows = document.querySelectorAll('.product-row');
+
+    function filterProducts() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedJenisProduk = filterJenisProduk.value.toLowerCase();
+        const selectedHarga = filterHarga.value;
+        
+        let visibleCount = 0;
+
+        productRows.forEach(row => {
+            const jenisProduk = row.getAttribute('data-jenis-produk');
+            const jenisBahan = row.getAttribute('data-jenis-bahan');
+            const warnaBahan = row.getAttribute('data-warna-bahan');
+            const sablon = row.getAttribute('data-sablon');
+            const harga = parseInt(row.getAttribute('data-harga'));
+
+            // Search filter
+            const searchMatch = searchTerm === '' || 
+                jenisProduk.includes(searchTerm) ||
+                jenisBahan.includes(searchTerm) ||
+                warnaBahan.includes(searchTerm) ||
+                sablon.includes(searchTerm);
+
+            // Jenis produk filter
+            const jenisProdukMatch = selectedJenisProduk === '' || jenisProduk === selectedJenisProduk;
+
+            // Harga filter
+            let hargaMatch = true;
+            if (selectedHarga !== '') {
+                const [min, max] = selectedHarga.split('-').map(val => {
+                    if (val === '+') return Infinity;
+                    return val === '' ? 0 : parseInt(val);
+                });
+                hargaMatch = harga >= min && (max === Infinity ? true : harga <= max);
+            }
+
+            // Show/hide row based on filters
+            if (searchMatch && jenisProdukMatch && hargaMatch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update result count
+        resultCount.textContent = visibleCount;
+
+        // Show "no results" message if needed
+        const noResultsRow = document.querySelector('tbody tr:not(.product-row)');
+        if (visibleCount === 0 && noResultsRow) {
+            noResultsRow.style.display = '';
+        } else if (noResultsRow) {
+            noResultsRow.style.display = 'none';
+        }
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', filterProducts);
+    filterJenisProduk.addEventListener('change', filterProducts);
+    filterHarga.addEventListener('change', filterProducts);
+
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        filterJenisProduk.value = '';
+        filterHarga.value = '';
+        filterProducts();
+    });
+
+    // Initial count
+    filterProducts();
+});
+</script>
 </x-layout-admin>

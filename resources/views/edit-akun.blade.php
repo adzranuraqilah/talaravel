@@ -19,7 +19,7 @@
             <textarea rows="3" placeholder="Masukkan Alamat Anda" class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base placeholder-gray-400"></textarea>
         </div>
         <div class="flex justify-center gap-6 mt-8">
-            <button type="button" class="px-8 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition">Batal</button>
+            <a href="/profile" class="px-8 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition">Batal</a>
             <button type="submit" class="px-8 py-2 rounded bg-[#1e335f] text-white font-semibold hover:bg-[#162547] transition">Simpan</button>
         </div>
     </form>
