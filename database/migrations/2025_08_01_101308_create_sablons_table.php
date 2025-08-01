@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('estimasi_harga', function (Blueprint $table) {
-            //
+        Schema::create('sablons', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_sablon');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('estimasi_harga', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('sablons');
     }
 };

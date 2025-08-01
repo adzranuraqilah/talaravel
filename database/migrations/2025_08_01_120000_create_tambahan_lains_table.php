@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('produks', function (Blueprint $table) {
-            $table->integer('jumlah_warna_sablon')->nullable()->after('sablon');
+        Schema::create('tambahan_lains', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_tambahan');
+            $table->decimal('harga', 10, 2);
+            $table->text('deskripsi')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('produks', function (Blueprint $table) {
-            $table->dropColumn('jumlah_warna_sablon');
-        });
+        Schema::dropIfExists('tambahan_lains');
     }
 }; 

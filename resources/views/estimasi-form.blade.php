@@ -100,11 +100,8 @@
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Model Jahitan</label>
                 <div class="relative">
-                    <select name="model_jahitan" class="block w-full px-4 py-2 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base text-gray-500">
+                    <select name="model_jahitan" id="model_jahitan" class="block w-full px-4 py-2 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base text-gray-500">
                         <option value="" disabled selected>Pilih Model Jahitan</option>
-                        <option value="standar">Standar</option>
-                        <option value="rantai">Rantai</option>
-                        <option value="overdeck">Overdeck</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,12 +113,8 @@
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Sablon</label>
                 <div class="relative">
-                    <select name="sablon" class="block w-full px-4 py-2 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base text-gray-500">
+                    <select name="sablon" id="sablon" class="block w-full px-4 py-2 border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base text-gray-500">
                         <option value="" disabled selected>Pilih Sablon</option>
-                        <option value="plastisol">Plastisol</option>
-                        <option value="rubber">Rubber</option>
-                        <option value="dtg">DTG</option>
-                        <option value="bordir">Bordir</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,64 +126,84 @@
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Jumlah Warna Sablon</label>
                 <input name="jumlah_warna_sablon" type="number" placeholder="Masukkan Jumlah Warna Sablon" class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] text-base">
+                <p class="text-xs text-gray-500 mt-1">1-4 warna: Rp. 20.000 | Lebih dari 4 warna: Rp. 25.000-30.000</p>
             </div>
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Tambahan Lain</label>
-                <div class="flex gap-4">
-                    <label class="inline-flex items-center">
-                        <input name="tambahan_lain[]" value="hangtag" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
-                        <span class="ml-2 text-base text-gray-700">Hangtag</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input name="tambahan_lain[]" value="woven" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
-                        <span class="ml-2 text-base text-gray-700">Woven</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input name="tambahan_lain[]" value="label_brand_sablon" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
-                        <span class="ml-2 text-base text-gray-700">Label Brand Sablon</span>
-                    </label>
+                <div id="tambahan_lain_container" class="flex gap-4 flex-wrap">
+                    <!-- Akan diisi oleh JavaScript -->
                 </div>
             </div>
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Waktu Pengerjaan</label>
-                <div class="flex gap-4">
-                    <label class="inline-flex items-center">
-                        <input name="waktu_pengerjaan" value="Standard" type="radio" class="form-radio h-5 w-5 text-blue-600">
-                        <span class="ml-2 text-base text-gray-700">Standard</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input name="waktu_pengerjaan" value="Express" type="radio" class="form-radio h-5 w-5 text-blue-600">
-                        <span class="ml-2 text-base text-gray-700">Express</span>
-                    </label>
+                <div id="waktu_pengerjaan_container" class="flex gap-4">
+                    <!-- Akan diisi oleh JavaScript -->
                 </div>
             </div>
         </div>
         <button type="submit" class="w-full mt-6 px-4 py-2.5 text-white bg-[#1e335f] rounded-md hover:bg-[#162547] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 font-bold text-base">
             Hitung
         </button>
-        <div class="bg-gray-100 rounded-lg p-6 mt-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-100 rounded-lg p-6 mt-6 hasil-estimasi hidden">
+            <h3 class="font-bold text-gray-800 mb-4 text-lg">Hasil Estimasi</h3>
+            
+            <!-- Rincian Harga Per Item -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-700 mb-3">Rincian Harga Per Item:</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Produk:</span>
+                        <span class="detail-produk-nama text-center">-</span>
+                        <span class="detail-produk-harga text-right">Rp. 0</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Bahan:</span>
+                        <span class="detail-bahan-nama text-center">-</span>
+                        <span class="detail-bahan-harga text-right">Rp. 0</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Warna Bahan:</span>
+                        <span class="detail-warna-nama text-center">-</span>
+                        <span class="text-gray-500 text-right">(Tidak ada biaya)</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Sablon:</span>
+                        <span class="detail-sablon-nama text-center">-</span>
+                        <span class="detail-sablon-harga text-right">Rp. 0</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Jahitan:</span>
+                        <span class="detail-jahitan-nama text-center">-</span>
+                        <span class="text-gray-500 text-right">(Tidak ada biaya)</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <span class="font-medium">Tambahan Lain:</span>
+                        <span class="detail-tambahan-nama text-center">-</span>
+                        <span class="detail-tambahan-harga text-right">Rp. 0</span>
+                    </div>
+                    <div class="border-t border-gray-300 pt-2 mt-2">
+                        <div class="grid grid-cols-3 gap-4 items-center font-semibold">
+                            <span>Total Harga Per Item:</span>
+                            <span></span>
+                            <span class="hasil-harga-per-item text-right">Rp. 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kuantitas dan Total -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <p class="font-bold text-gray-800 mb-1">Hasil Estimasi</p>
-                    <p class="text-sm text-gray-600">Harga Per Item</p>
-                    <p class="font-bold hasil-harga-per-item">Rp. 0</p>
+                    <p class="text-sm text-gray-600">Kuantitas</p>
+                    <p class="font-bold detail-kuantitas">0 pcs</p>
                 </div>
                 <div>
-                    <p class="font-bold text-gray-800 mb-1 invisible">Hasil Estimasi</p>
-                    <p class="text-sm text-gray-600">Total Sebelum Diskon</p>
-                    <p class="font-bold hasil-total-sebelum-diskon">Rp. 0</p>
-                </div>
-                <div>
-                    <p class="font-bold text-gray-800 mb-1 invisible">Hasil Estimasi</p>
-                    <p class="text-sm text-gray-600">Diskon</p>
-                    <p class="font-bold hasil-diskon text-green-600">Rp. 0</p>
-                </div>
-                <div>
-                    <p class="font-bold text-gray-800 mb-1 invisible">Hasil Estimasi</p>
                     <p class="text-sm text-gray-600">Total Estimasi</p>
                     <p class="font-bold hasil-total-estimasi">Rp. 0</p>
                 </div>
             </div>
+            
+            <!-- Estimasi Pengerjaan -->
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <p class="font-bold text-gray-800 mb-1">Estimasi Pengerjaan</p>
                 <p class="font-bold hasil-estimasi-pengerjaan">0 hari kerja</p>
@@ -265,6 +278,11 @@
             }
         });
 
+        // Load data jahitan, sablon, tambahan lain, dan waktu pengerjaan
+        loadJahitanOptions();
+        loadSablonOptions();
+        loadTambahanLainOptions();
+
         // Load bahan berdasarkan jenis produk
         $('#jenis_produk').on('change', function() {
             const jenisProduk = $(this).val();
@@ -332,13 +350,27 @@
             }
         });
 
+        // Load waktu pengerjaan berdasarkan produk
+        $('#jenis_produk').on('change', function() {
+            const jenisProduk = $(this).val();
+            if (jenisProduk) {
+                loadWaktuPengerjaanOptions(jenisProduk);
+            } else {
+                // Clear waktu pengerjaan jika tidak ada produk yang dipilih
+                $('#waktu_pengerjaan_container').empty();
+            }
+        });
+
         // Handle form submission
         $('#form-estimasi').on('submit', function(e) {
             e.preventDefault();
             console.log('Form submitted');
             
+            // Collect form data properly
             const formData = new FormData(this);
             const data = {};
+            
+            // Handle regular fields
             formData.forEach((value, key) => {
                 if (data[key]) {
                     if (Array.isArray(data[key])) {
@@ -350,6 +382,20 @@
                     data[key] = value;
                 }
             });
+            
+            // Handle ukuran checkboxes specifically
+            const ukuranChecked = [];
+            $('input[name="ukuran[]"]:checked').each(function() {
+                ukuranChecked.push($(this).val());
+            });
+            data.ukuran = ukuranChecked;
+            
+            // Handle tambahan_lain checkboxes specifically
+            const tambahanChecked = [];
+            $('input[name="tambahan_lain[]"]:checked').each(function() {
+                tambahanChecked.push($(this).val());
+            });
+            data.tambahan_lain = tambahanChecked;
             
             console.log('Form data:', data);
             
@@ -363,12 +409,74 @@
                 },
                 success: function(res) {
                     console.log('Success response:', res);
-                    $('.hasil-harga-per-item').text('Rp. ' + res.harga_per_item.toLocaleString());
-                    $('.hasil-total-sebelum-diskon').text('Rp. ' + res.total_sebelum_diskon.toLocaleString());
-                    $('.hasil-diskon').text('Rp. ' + res.diskon.toLocaleString());
-                    $('.hasil-total-estimasi').text('Rp. ' + res.total_estimasi.toLocaleString());
-                    $('.hasil-estimasi-pengerjaan').text(res.estimasi_pengerjaan);
+                    console.log('harga_per_item:', res.harga_per_item);
+                    console.log('total_estimasi:', res.total_estimasi);
+                    console.log('estimasi_pengerjaan:', res.estimasi_pengerjaan);
                     
+                    // Isi rincian detail
+                    if (res.detail) {
+                        // Produk
+                        if (res.detail.produk) {
+                            $('.detail-produk-nama').text(res.detail.produk.nama);
+                            $('.detail-produk-harga').text('Rp. ' + res.detail.produk.harga.toLocaleString());
+                        }
+                        
+                        // Bahan
+                        if (res.detail.bahan) {
+                            $('.detail-bahan-nama').text(res.detail.bahan.nama);
+                            $('.detail-bahan-harga').text('Rp. ' + res.detail.bahan.harga.toLocaleString());
+                        }
+                        
+                        // Warna Bahan
+                        if (res.detail.warna_bahan) {
+                            $('.detail-warna-nama').text(res.detail.warna_bahan.nama);
+                        }
+                        
+                        // Sablon
+                        if (res.detail.sablon) {
+                            $('.detail-sablon-nama').text(res.detail.sablon.nama);
+                            $('.detail-sablon-harga').text('Rp. ' + res.detail.sablon.harga.toLocaleString());
+                        }
+                        
+                        // Jahitan
+                        if (res.detail.jahitan) {
+                            $('.detail-jahitan-nama').text(res.detail.jahitan.nama);
+                        }
+                        
+                        // Tambahan Lain
+                        if (res.detail.tambahan_lain) {
+                            if (res.detail.tambahan_lain.items && res.detail.tambahan_lain.items.length > 0) {
+                                $('.detail-tambahan-nama').text(res.detail.tambahan_lain.items.join(', '));
+                                $('.detail-tambahan-harga').text('Rp. ' + res.detail.tambahan_lain.harga.toLocaleString());
+                            } else {
+                                $('.detail-tambahan-nama').text('-');
+                                $('.detail-tambahan-harga').text('Rp. 0');
+                            }
+                        }
+                        
+                        // Kuantitas
+                        if (res.detail.kuantitas) {
+                            $('.detail-kuantitas').text(res.detail.kuantitas + ' pcs');
+                        }
+                    }
+                    
+                    // Pastikan semua field ada sebelum mengakses propertinya
+                    if (res.harga_per_item !== undefined) {
+                        console.log('Setting harga_per_item to:', res.harga_per_item);
+                        $('.hasil-harga-per-item').text('Rp. ' + res.harga_per_item.toLocaleString());
+                    }
+                    
+                    if (res.total_estimasi !== undefined) {
+                        console.log('Setting total_estimasi to:', res.total_estimasi);
+                        $('.hasil-total-estimasi').text('Rp. ' + res.total_estimasi.toLocaleString());
+                    }
+                    
+                    if (res.estimasi_pengerjaan !== undefined) {
+                        console.log('Setting estimasi_pengerjaan to:', res.estimasi_pengerjaan);
+                        $('.hasil-estimasi-pengerjaan').text(res.estimasi_pengerjaan);
+                    }
+                    
+                    // Tampilkan hasil estimasi
                     $('.hasil-estimasi').removeClass('hidden');
                     $('html, body').animate({
                         scrollTop: $('.hasil-estimasi').offset().top - 100
@@ -505,6 +613,130 @@
             };
             
             return warnaData[jenisProduk]?.[jenisBahan] || [];
+        }
+
+        function loadJahitanOptions() {
+            $.ajax({
+                url: "/api/jahitan",
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    const jahitanSelect = $('#model_jahitan');
+                    jahitanSelect.html('<option value="" disabled selected>Pilih Model Jahitan</option>');
+                    
+                    data.forEach(function(jahitan) {
+                        jahitanSelect.append(`<option value="${jahitan.nama_jahitan}">${jahitan.nama_jahitan}</option>`);
+                    });
+                },
+                error: function() {
+                    // Fallback data
+                    const fallbackData = ['Standar', 'Rantai', 'Overdeck'];
+                    const jahitanSelect = $('#model_jahitan');
+                    jahitanSelect.html('<option value="" disabled selected>Pilih Model Jahitan</option>');
+                    
+                    fallbackData.forEach(function(jahitan) {
+                        jahitanSelect.append(`<option value="${jahitan}">${jahitan}</option>`);
+                    });
+                }
+            });
+        }
+
+        function loadSablonOptions() {
+            $.ajax({
+                url: "/api/sablon",
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    const sablonSelect = $('#sablon');
+                    sablonSelect.html('<option value="" disabled selected>Pilih Sablon</option>');
+                    
+                    data.forEach(function(sablon) {
+                        sablonSelect.append(`<option value="${sablon.nama_sablon}">${sablon.nama_sablon}</option>`);
+                    });
+                },
+                error: function() {
+                    // Fallback data
+                    const fallbackData = ['Plastisol', 'Rubber', 'DTG', 'Bordir'];
+                    const sablonSelect = $('#sablon');
+                    sablonSelect.html('<option value="" disabled selected>Pilih Sablon</option>');
+                    
+                    fallbackData.forEach(function(sablon) {
+                        sablonSelect.append(`<option value="${sablon}">${sablon}</option>`);
+                    });
+                }
+            });
+        }
+
+        function loadTambahanLainOptions() {
+            $.ajax({
+                url: "/api/tambahan-lain",
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    const container = $('#tambahan_lain_container');
+                    container.empty();
+                    
+                    data.forEach(function(tambahan) {
+                        container.append(`
+                            <label class="inline-flex items-center">
+                                <input name="tambahan_lain[]" value="${tambahan.nama_tambahan}" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-base text-gray-700">${tambahan.nama_tambahan}</span>
+                            </label>
+                        `);
+                    });
+                },
+                error: function() {
+                    // Fallback data
+                    const fallbackData = ['Hangtag', 'Woven', 'Label Brand Sablon'];
+                    const container = $('#tambahan_lain_container');
+                    container.empty();
+                    
+                    fallbackData.forEach(function(tambahan) {
+                        container.append(`
+                            <label class="inline-flex items-center">
+                                <input name="tambahan_lain[]" value="${tambahan}" type="checkbox" class="form-checkbox h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-base text-gray-700">${tambahan}</span>
+                            </label>
+                        `);
+                    });
+                }
+            });
+        }
+
+        function loadWaktuPengerjaanOptions(jenisProduk) {
+            $.ajax({
+                url: `/api/waktu-pengerjaan?produk=${jenisProduk}`,
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    const container = $('#waktu_pengerjaan_container');
+                    container.empty();
+                    
+                    data.forEach(function(waktu) {
+                        container.append(`
+                            <label class="inline-flex items-center">
+                                <input name="waktu_pengerjaan" value="${waktu.nama_waktu}" type="radio" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-base text-gray-700">${waktu.nama_waktu}</span>
+                            </label>
+                        `);
+                    });
+                },
+                error: function() {
+                    // Fallback data
+                    const fallbackData = ['Standard', 'Express'];
+                    const container = $('#waktu_pengerjaan_container');
+                    container.empty();
+                    
+                    fallbackData.forEach(function(waktu) {
+                        container.append(`
+                            <label class="inline-flex items-center">
+                                <input name="waktu_pengerjaan" value="${waktu}" type="radio" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2 text-base text-gray-700">${waktu}</span>
+                            </label>
+                        `);
+                    });
+                }
+            });
         }
     });
     </script>
