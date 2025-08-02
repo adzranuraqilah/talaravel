@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tambahan_lains', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_tambahan');
-            $table->decimal('harga', 10, 2);
+        Schema::table('sablons', function (Blueprint $table) {
             $table->text('deskripsi')->nullable();
-            $table->timestamps();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tambahan_lains');
+        Schema::table('sablons', function (Blueprint $table) {
+            //
+        });
     }
-}; 
+};

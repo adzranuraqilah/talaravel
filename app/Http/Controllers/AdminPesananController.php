@@ -61,7 +61,7 @@ class AdminPesananController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Status pesanan berhasil diupdate!');
+        return redirect('/admin/pesanan')->with('success', 'Status pesanan berhasil diupdate!');
     }
 
     public function index(Request $request) {

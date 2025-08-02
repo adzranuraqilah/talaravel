@@ -26,7 +26,7 @@
     </form>
     <div class="mt-16 text-center">
         <span class="text-gray-700 text-base">Tidak punya akun? </span>
-        <a href="#" class="font-bold text-[#1e335f] hover:underline">Daftar</a>
+        <a href="/register" class="font-bold text-[#1e335f] hover:underline">Daftar</a>
     </div>
 </div>
 </x-layout> 

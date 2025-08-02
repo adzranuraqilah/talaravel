@@ -38,6 +38,7 @@
                         <tr class="border-b">
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">No</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Nama Bahan</th>
+                            <th class="py-3 px-4 text-left text-gray-600 font-semibold">Deskripsi</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Harga</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Aksi</th>
                         </tr>
@@ -47,6 +48,13 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-3 px-4">{{ $index + 1 }}</td>
                             <td class="py-3 px-4 font-medium">{{ $bahan->nama_bahan }}</td>
+                            <td class="py-3 px-4">
+                                @if($bahan->deskripsi)
+                                    <span class="text-gray-600">{{ Str::limit($bahan->deskripsi, 50) }}</span>
+                                @else
+                                    <span class="text-gray-400 italic">Tidak ada deskripsi</span>
+                                @endif
+                            </td>
                             <td class="py-3 px-4 text-green-600 font-semibold">Rp {{ number_format($bahan->harga, 0, ',', '.') }}</td>
                             <td class="py-3 px-4">
                                 <div class="flex gap-2">

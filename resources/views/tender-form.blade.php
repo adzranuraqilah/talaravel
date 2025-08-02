@@ -4,6 +4,9 @@
             <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Ajukan Pesanan Tender</h2>
             <p class="text-gray-700 text-base">Isi Form Berikut Untuk Mengajukan Pesanan Anda</p>
         </div>
+        
+        @auth
+        <!-- Form hanya muncul jika sudah login -->
         <div class="flex justify-center gap-10 mb-8">
             <label class="flex items-center cursor-pointer text-lg font-medium text-gray-700">
                 <input type="radio" name="tipe" value="personal" class="appearance-none w-6 h-6 border-2 border-gray-400 rounded-full checked:bg-white checked:border-[#444] focus:outline-none transition-all mr-2 relative checked:after:content-[''] checked:after:block checked:after:w-3 checked:after:h-3 checked:after:rounded-full checked:after:bg-[#444] checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2" onchange="if(this.checked){window.location.href='/personal'}">
@@ -72,23 +75,54 @@
                 Preview Pesanan
             </button>
             <!-- Submit Button -->
-            @auth
             <button type="submit" class="w-full flex items-center justify-center px-4 py-2.5 text-white bg-[#1e335f] rounded-md hover:bg-[#162547] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 text-base font-semibold">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                 </svg>
                 Ajukan Tender
             </button>
-            @else
-            <a href="/login" class="w-full flex items-center justify-center px-4 py-2.5 text-white bg-[#1e335f] rounded-md hover:bg-[#162547] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 text-base font-semibold">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                </svg>
-                Login untuk Ajukan Tender
-            </a>
-            @endauth
         </form>
-        <!-- Preview Hasil Input -->
+        @else
+        <!-- Tampilan untuk user yang belum login -->
+        <div class="text-center py-12">
+            <div class="mb-6">
+                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Login Diperlukan</h3>
+                <p class="text-gray-600 mb-6">Anda harus login terlebih dahulu untuk mengajukan pesanan tender</p>
+            </div>
+            
+            <div class="space-y-3">
+                <a href="/login" class="w-full flex items-center justify-center px-6 py-3 text-white bg-[#1e335f] rounded-md hover:bg-[#162547] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 text-base font-semibold">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
+                    Login Sekarang
+                </a>
+                
+                <a href="/register" class="w-full flex items-center justify-center px-6 py-3 text-[#1e335f] bg-white border border-[#1e335f] rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 text-base font-semibold">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                    Daftar Akun Baru
+                </a>
+            </div>
+            
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 class="font-semibold text-blue-800 mb-2">Mengapa harus login?</h4>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• Untuk melacak status pesanan tender Anda</li>
+                    <li>• Menerima notifikasi update proyek</li>
+                    <li>• Akses ke riwayat pesanan sebelumnya</li>
+                    <li>• Komunikasi langsung dengan tim kami</li>
+                </ul>
+            </div>
+        </div>
+        @endauth
+        
+        @auth
+        <!-- Preview Hasil Input - hanya muncul jika login -->
         <div id="preview" class="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg hidden">
             <h3 class="text-lg font-bold mb-4">Preview Pesanan</h3>
             <div class="space-y-2">
@@ -101,6 +135,8 @@
                 <div id="preview-desain-img"></div>
             </div>
         </div>
+        @endauth
+        @auth
         <script>
         function showPreview() {
             document.getElementById('preview').style.display = 'block';
@@ -123,6 +159,7 @@
             }
         }
         </script>
+        @endauth
     </div>
 </x-layout>
 

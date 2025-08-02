@@ -19,6 +19,15 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Deskripsi</label>
+                    <textarea name="deskripsi" placeholder="Masukkan deskripsi sablon (opsional)" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e335f] focus:border-[#1e335f] @error('deskripsi') border-red-500 @enderror">{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
             
             <!-- Tombol -->

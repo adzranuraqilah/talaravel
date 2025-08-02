@@ -87,12 +87,16 @@ if ($portfolios->count() == 0) {
     <div class="mb-12">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-bold text-[#1e335f]">Tools</h2>
-            <a href="/admin/galeri" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
-                Kelola Tools
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-            </a>
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a href="/admin/galeri" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                        Kelola Tools
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </a>
+                @endif
+            @endauth
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             @foreach($tools as $tool)
@@ -114,12 +118,16 @@ if ($portfolios->count() == 0) {
     <div>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-bold text-[#1e335f]">Portofolio Kami</h2>
-            <a href="/admin/galeri" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
-                Kelola Portfolio
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-            </a>
+            @auth
+                @if(auth()->user()->role === 'admin')
+                    <a href="/admin/galeri" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                        Kelola Portfolio
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </a>
+                @endif
+            @endauth
         </div>
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
             @foreach($portfolios as $portfolio)

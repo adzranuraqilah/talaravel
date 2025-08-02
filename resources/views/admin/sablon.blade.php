@@ -38,6 +38,7 @@
                         <tr class="border-b">
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">No</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Nama Sablon</th>
+                            <th class="py-3 px-4 text-left text-gray-600 font-semibold">Deskripsi</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Tanggal Dibuat</th>
                             <th class="py-3 px-4 text-left text-gray-600 font-semibold">Aksi</th>
                         </tr>
@@ -48,6 +49,13 @@
                             <td class="py-3 px-4">{{ $index + 1 }}</td>
                             <td class="py-3 px-4">
                                 <span class="font-medium">{{ $sablon->nama_sablon }}</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                @if($sablon->deskripsi)
+                                    <span class="text-gray-600">{{ Str::limit($sablon->deskripsi, 50) }}</span>
+                                @else
+                                    <span class="text-gray-400 italic">Tidak ada deskripsi</span>
+                                @endif
                             </td>
                             <td class="py-3 px-4 text-gray-500">
                                 {{ $sablon->created_at->format('d/m/Y H:i') }}
@@ -73,7 +81,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="py-8 px-4 text-center text-gray-500">Tidak ada data sablon</td>
+                            <td colspan="5" class="py-8 px-4 text-center text-gray-500">Tidak ada data sablon</td>
                         </tr>
                         @endforelse
                     </tbody>

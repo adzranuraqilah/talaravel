@@ -24,11 +24,13 @@ class SablonController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_sablon' => 'required|string|max:255|unique:sablons,nama_sablon'
+            'nama_sablon' => 'required|string|max:255|unique:sablons,nama_sablon',
+            'deskripsi' => 'nullable|string|max:1000'
         ]);
 
         Sablon::create([
-            'nama_sablon' => $request->nama_sablon
+            'nama_sablon' => $request->nama_sablon,
+            'deskripsi' => $request->deskripsi
         ]);
 
         return redirect()->route('admin.sablon.index')->with('success', 'Sablon berhasil ditambahkan!');
@@ -45,12 +47,14 @@ class SablonController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_sablon' => 'required|string|max:255|unique:sablons,nama_sablon,' . $id
+            'nama_sablon' => 'required|string|max:255|unique:sablons,nama_sablon,' . $id,
+            'deskripsi' => 'nullable|string|max:1000'
         ]);
 
         $sablon = Sablon::findOrFail($id);
         $sablon->update([
-            'nama_sablon' => $request->nama_sablon
+            'nama_sablon' => $request->nama_sablon,
+            'deskripsi' => $request->deskripsi
         ]);
 
         return redirect()->route('admin.sablon.index')->with('success', 'Sablon berhasil diperbarui!');

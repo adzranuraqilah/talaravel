@@ -122,6 +122,9 @@
                         </svg>
                     </div>
                 </div>
+                <div id="deskripsi_sablon" class="mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-600 hidden">
+                    <p id="deskripsi_sablon_text"></p>
+                </div>
             </div>
             <div>
                 <label class="block text-base font-medium text-gray-800 mb-1">Jumlah Warna Sablon</label>
@@ -515,6 +518,33 @@
                 });
             } else {
                 $('#deskripsi_bahan').addClass('hidden');
+            }
+        });
+
+        // Show deskripsi sablon
+        $('#sablon').on('change', function() {
+            const sablonNama = $(this).val();
+            
+            if (sablonNama) {
+                $.ajax({
+                    url: "/api/sablon",
+                    method: "GET",
+                    dataType: "json",
+                    success: function(data) {
+                        const selectedSablon = data.find(sablon => sablon.nama_sablon === sablonNama);
+                        if (selectedSablon && selectedSablon.deskripsi) {
+                            $('#deskripsi_sablon_text').text(selectedSablon.deskripsi);
+                            $('#deskripsi_sablon').removeClass('hidden');
+                        } else {
+                            $('#deskripsi_sablon').addClass('hidden');
+                        }
+                    },
+                    error: function() {
+                        $('#deskripsi_sablon').addClass('hidden');
+                    }
+                });
+            } else {
+                $('#deskripsi_sablon').addClass('hidden');
             }
         });
 

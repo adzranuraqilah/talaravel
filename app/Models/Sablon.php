@@ -9,6 +9,7 @@ class Sablon extends Model
     protected $table = 'sablons';
     
     protected $fillable = [
-        'nama_sablon'
+        'nama_sablon',
+        'deskripsi'
     ];
 }
