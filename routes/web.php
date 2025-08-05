@@ -12,6 +12,7 @@ use App\Http\Controllers\EstimasiHargaController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\customController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdminGaleriController;
 use App\Models\WarnaBahan;
 
@@ -128,7 +129,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('admin/tambahan-lain/{id}', [TambahanLainController::class, 'destroy'])->name('admin.tambahan-lain.destroy');
 
 
-    
+
 
     Route::get('/admin/pesanan', [App\Http\Controllers\AdminPesananController::class, 'index']);
 
@@ -154,7 +155,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/pengaturan', [App\Http\Controllers\AdminPengaturanController::class, 'index']);
     Route::post('/admin/pengaturan', [App\Http\Controllers\AdminPengaturanController::class, 'update']);
-    
+
     Route::get('/admin/pricing-settings', [App\Http\Controllers\AdminPricingController::class, 'index']);
     Route::put('/admin/pricing-settings', [App\Http\Controllers\AdminPricingController::class, 'update']);
 
@@ -178,7 +179,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/portfolio/delete/{id}', [App\Http\Controllers\GaleriPratinjauController::class, 'destroy'])->name('admin.portfolio.destroy');
 
 
-    
+
 });
 
 Route::get('/personal', [OrderController::class, 'showPersonalForm']);
@@ -193,6 +194,8 @@ Route::get('/terima-kasih', function () {
 
 Route::get('/order/{id}', [OrderController::class, 'showDetail'])->middleware('auth');
 
+Route::post('/api/payment/token', [PaymentController::class, 'getSnapToken'])->middleware('auth');
+
 Route::get('/admin/pesanan/{id}', [App\Http\Controllers\AdminPesananController::class, 'show']);
 Route::put('/admin/pesanan/{id}', [App\Http\Controllers\AdminPesananController::class, 'update']);
 
@@ -200,3 +203,5 @@ Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logou
 Route::get('/logout', function() { return redirect('/login'); });
 
 Route::resource('pratinjau', App\Http\Controllers\GaleriPratinjauController::class);
+
+

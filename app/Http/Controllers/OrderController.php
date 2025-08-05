@@ -56,8 +56,10 @@ class OrderController extends Controller
             session()->put('pending_form_type', 'tender');
             return redirect('/login');
         }
-        // Validasi data
+
+        // ✅ Validasi data (tambah instansi)
         $validated = $request->validate([
+            'instansi' => 'nullable|string|max:255', // ✅ Tambahkan ini
             'nama_proyek' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'kuantitas' => 'required|integer|min:24',
@@ -66,23 +68,26 @@ class OrderController extends Controller
             'desain' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        // Handle file upload
+        // ✅ Handle file upload
         if ($request->hasFile('desain')) {
             $validated['desain'] = $request->file('desain')->store('desain', 'public');
         }
 
+        // ✅ Tambah info tambahan
         $validated['tipe'] = 'tender';
         $validated['user_id'] = Auth::id();
         $validated['status'] = 'menunggu';
 
+        // ✅ Simpan ke DB
         Order::create($validated);
 
         return redirect('/terima-kasih');
     }
+
 
     public function showDetail($id)
     {
         $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         return view('order-detail', compact('order'));
     }
-} 
+}

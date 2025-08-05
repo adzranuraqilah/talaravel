@@ -13,6 +13,8 @@ class ProfileController extends Controller
         $tenderDiajukan = $user->orders()->where('tipe', 'tender')->count();
         $tenderDiterima = $user->orders()->where('tipe', 'tender')->where('status', 'diterima')->count();
         $tenderSelesai = $user->orders()->where('tipe', 'tender')->where('status', 'selesai')->count();
+        $tenderRiwayat = $user->orders()->where('tipe', 'tender')->latest()->get();
+        $personalRiwayat = $user->orders()->where('tipe', 'personal')->latest()->get();
         $riwayat = $user->orders()->latest()->get();
         return view('profile', compact('user', 'tenderDiajukan', 'tenderDiterima', 'tenderSelesai', 'riwayat'));
     }
@@ -36,4 +38,4 @@ class ProfileController extends Controller
         $user->save();
         return redirect('/profile')->with('success', 'Profil berhasil diperbarui!');
     }
-} 
+}

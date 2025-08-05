@@ -11,6 +11,7 @@ class Order extends Model
 
     // Tambahkan ini:
     protected $fillable = [
+        'instansi',
         'tipe',
         'nama_proyek',
         'deskripsi',
