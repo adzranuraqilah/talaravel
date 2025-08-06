@@ -1,7 +1,7 @@
 <x-layout>
     <div class="max-w-xl mx-auto p-8 bg-white border border-gray-300 rounded-2xl mt-6" style="box-shadow:none;">
         <div class="text-center mb-6">
-            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Ajukan Pesanan Tender</h2>
+            <h2 class="text-3xl font-extrabold text-gray-900 mb-2">Ajukan Pesanan Instansi</h2>
             <p class="text-gray-700 text-base">Isi Form Berikut Untuk Mengajukan Pesanan Anda</p>
         </div>
         
@@ -14,7 +14,7 @@
             </label>
             <label class="flex items-center cursor-pointer text-lg font-medium text-gray-700">
                 <input type="radio" name="tipe" value="tender" class="appearance-none w-6 h-6 border-2 border-gray-400 rounded-full checked:bg-white checked:border-[#444] focus:outline-none transition-all mr-2 relative checked:after:content-[''] checked:after:block checked:after:w-3 checked:after:h-3 checked:after:rounded-full checked:after:bg-[#444] checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2">
-                Tender
+                Instansi
             </label>
         </div>
         <form class="space-y-5" method="POST" action="/tender" enctype="multipart/form-data">
@@ -79,7 +79,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                 </svg>
-                Ajukan Tender
+                Ajukan Pesanan Instansi
             </button>
         </form>
         @else
@@ -90,7 +90,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                 </svg>
                 <h3 class="text-xl font-semibold text-gray-800 mb-2">Login Diperlukan</h3>
-                <p class="text-gray-600 mb-6">Anda harus login terlebih dahulu untuk mengajukan pesanan tender</p>
+                <p class="text-gray-600 mb-6">Anda harus login terlebih dahulu untuk mengajukan pesanan</p>
             </div>
             
             <div class="space-y-3">
@@ -112,7 +112,7 @@
             <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h4 class="font-semibold text-blue-800 mb-2">Mengapa harus login?</h4>
                 <ul class="text-sm text-blue-700 space-y-1">
-                    <li>• Untuk melacak status pesanan tender Anda</li>
+                    <li>• Untuk melacak status pesanan Anda</li>
                     <li>• Menerima notifikasi update proyek</li>
                     <li>• Akses ke riwayat pesanan sebelumnya</li>
                     <li>• Komunikasi langsung dengan tim kami</li>

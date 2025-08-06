@@ -11,7 +11,7 @@
             <div class="hidden md:flex items-center space-x-10">
                 <a href="/" class="{{ Request::is('/') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">Beranda</a>
                 <a href="/estimasi-harga" class="{{ Request::is('estimasi-harga') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">Harga</a>
-                <a href="/tender" class="{{ Request::is('tender') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">Tender</a>
+                <a href="/tender" class="{{ Request::is('tender') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">Pesan</a>
                 <a href="/custom" class="{{ Request::is('custom') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">Custom</a>
                 <a href="/profile" class="{{ Request::is('profile') ? 'font-bold text-[#1e335f]' : 'text-gray-500 hover:text-[#1e335f]' }} px-2 py-2 text-base">
                 <span class="ml-6 flex items-center">

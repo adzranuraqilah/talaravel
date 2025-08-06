@@ -11,7 +11,7 @@
             </label>
             <label class="flex items-center cursor-pointer text-lg font-medium text-gray-700">
                 <input type="radio" name="tipe" value="tender" class="appearance-none w-6 h-6 border-2 border-gray-400 rounded-full checked:bg-white checked:border-[#444] focus:outline-none transition-all mr-2 relative checked:after:content-[''] checked:after:block checked:after:w-3 checked:after:h-3 checked:after:rounded-full checked:after:bg-[#444] checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2" onchange="if(this.checked){window.location.href='/tender'}">
-                Tender
+                Instansi
             </label>
         </div>
         <form class="space-y-5" method="POST" action="/personal" enctype="multipart/form-data">
@@ -72,7 +72,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                 </svg>
-                Ajukan Personal
+                Ajukan Pesanan Personal
             </button>
             @else
             <a href="/login" class="w-full flex items-center justify-center px-4 py-2.5 text-white bg-[#1e335f] rounded-md hover:bg-[#162547] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 text-base font-semibold">
