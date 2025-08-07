@@ -37,7 +37,7 @@ class OrderController extends Controller
 
         $validated['tipe'] = 'personal';
         $validated['user_id'] = Auth::id();
-        $validated['status'] = 'menunggu';
+        $validated['status'] = 'menunggu pembayaran';
 
         Order::create($validated);
 
@@ -76,7 +76,7 @@ class OrderController extends Controller
         // ✅ Tambah info tambahan
         $validated['tipe'] = 'tender';
         $validated['user_id'] = Auth::id();
-        $validated['status'] = 'menunggu';
+        $validated['status'] = 'menunggu pembayaran';
 
         // ✅ Simpan ke DB
         Order::create($validated);
