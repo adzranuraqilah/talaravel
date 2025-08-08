@@ -65,24 +65,24 @@
             </form>
         </div>
 
-        <!-- Statistik Tender -->
+        <!-- Statistik Pesanan -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="bg-gray-100 rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold">{{ $tenderDiajukan }}</div>
-                <div class="text-gray-600 text-sm">Tender Diajukan</div>
+                <div class="text-gray-600 text-sm">Pesanan Diajukan</div>
             </div>
             <div class="bg-gray-100 rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold">{{ $tenderDiterima }}</div>
-                <div class="text-gray-600 text-sm">Tender Diterima</div>
+                <div class="text-gray-600 text-sm">Pesanan Diterima</div>
             </div>
             <div class="bg-gray-100 rounded-lg p-4 text-center">
                 <div class="text-2xl font-bold">{{ $tenderSelesai }}</div>
-                <div class="text-gray-600 text-sm">Tender Selesai</div>
+                <div class="text-gray-600 text-sm">Pesanan Selesai</div>
             </div>
         </div>
 
-        <!-- Riwayat Tender -->
-        <div class="mb-4 text-lg font-semibold">Riwayat Tender</div>
+        <!-- Riwayat Pesanan -->
+        <div class="mb-4 text-lg font-semibold">Riwayat Pesanan Instansi</div>
         <div class="space-y-4">
             @forelse($riwayat->where('tipe', 'tender') as $order)
                 <a href="/order/{{ $order->id }}"
@@ -118,12 +118,12 @@
                     @endif
                 </a>
             @empty
-                <p class="text-gray-500">Belum ada tender yang diajukan.</p>
+                <p class="text-gray-500">Belum ada pesanan Instansi yang diajukan.</p>
             @endforelse
         </div>
 
         <!-- Riwayat Personal -->
-        <div class="mt-10 mb-4 text-lg font-semibold">Riwayat Personal</div>
+        <div class="mt-10 mb-4 text-lg font-semibold">Riwayat Pesanan Personal</div>
         <div class="space-y-4">
             @forelse($riwayat->where('tipe', 'personal') as $order)
                 <a href="/order/{{ $order->id }}"

@@ -51,7 +51,7 @@ if ($portfolios->count() == 0) {
             <p class="text-gray-700 mb-6">Mudah, Cepat dan Transparan dalam proses jahit-menjahit.</p>
         </div>
         <div class="flex-1 flex justify-center">
-            <img src="https://i.ibb.co/6wQk6kz/kaos-hero.png" alt="Produk Kaos" class="w-[260px] md:w-[340px] object-contain">
+            <img src="{{ asset('/img/Mivace.png') }}" alt="Produk Kaos" class="w-[260px] md:w-[340px] object-contain">
         </div>
     </div>
     <div class="flex flex-col items-center">
@@ -66,7 +66,7 @@ if ($portfolios->count() == 0) {
                 <span class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 mb-1 group-hover:bg-blue-100 transition-colors">
                     <svg class="w-6 h-6 text-[#1e335f] group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v4a1 1 0 001 1h3m10-5h2a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h2m2 0V5a2 2 0 114 0v2m-4 0h4"/></svg>
                 </span>
-                <span class="font-semibold text-[#1e335f] text-base">Ajukan Tender</span>
+                <span class="font-semibold text-[#1e335f] text-base">Ajukan Pesanan</span>
             </a>
             <a href="/custom" class="flex flex-col items-center justify-center gap-2 py-4 bg-white rounded-xl shadow border hover:bg-gray-50 hover:shadow-lg hover:scale-105 transition-all duration-200 w-full group">
                 <span class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 mb-1 group-hover:bg-blue-100 transition-colors">
