@@ -26,7 +26,8 @@ Route::get('/estimasi-harga', function () {
     return view('estimasi-form');
 });
 
-
+Route::post('/midtrans/webhook', [PaymentController::class, 'handleWebhook'])
+    ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
 
 Route::get('/custom', [customController::class, 'showForm']);
 Route::post('/custom', [customController::class, 'submit']);
@@ -203,5 +204,8 @@ Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logou
 Route::get('/logout', function() { return redirect('/login'); });
 
 Route::resource('pratinjau', App\Http\Controllers\GaleriPratinjauController::class);
+
+
+
 
 

@@ -11,7 +11,7 @@ class DashboardController extends Controller
     {
         $totalPesanan = Order::count();
         $totalPelanggan = User::count();
-        $totalPendapatan = Order::sum('budget');
+        $totalPendapatan = Order::whereIn('status', ['dibayar', 'selesai'])->sum('budget');
 
         $pesananQuery = Order::with('user');
         if ($request->q) {
@@ -37,4 +37,4 @@ class DashboardController extends Controller
             'pesananTerbaru', 'status'
         ));
     }
-} 
+}
