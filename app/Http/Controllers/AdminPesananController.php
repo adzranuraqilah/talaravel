@@ -18,7 +18,7 @@ class AdminPesananController extends Controller
     {
         $order = Order::findOrFail($id);
         $status = $request->status;
-        
+
         // Logika status yang lebih jelas
         switch ($status) {
             case 'diterima':
@@ -36,7 +36,7 @@ class AdminPesananController extends Controller
             default:
                 $order->status = $status;
         }
-        
+
         $order->catatan = $request->catatan;
         $order->save();
 
@@ -44,12 +44,12 @@ class AdminPesananController extends Controller
         if ($status === 'diproses') {
             // Cek apakah sudah ada produksi untuk order ini
             $existingProduksi = Produksi::where('order_id', $order->id)->first();
-            
+
             if (!$existingProduksi) {
                 // Hitung tanggal mulai dan selesai berdasarkan tenggat waktu
                 $tanggalMulai = Carbon::now();
                 $tanggalSelesai = Carbon::parse($order->tenggat);
-                
+
                 // Buat jadwal produksi baru
                 Produksi::create([
                     'nama_produksi' => 'Produksi ' . $order->nama_proyek,
@@ -64,17 +64,29 @@ class AdminPesananController extends Controller
         return redirect('/admin/pesanan')->with('success', 'Status pesanan berhasil diupdate!');
     }
 
-    public function index(Request $request) {
-        $query = \App\Models\Order::with('user');
-        if ($request->q) {
-            $query->where(function($q) use ($request) {
-                $q->where('nama_proyek', 'like', '%'.$request->q.'%')
-                  ->orWhereHas('user', function($qu) use ($request) {
-                      $qu->where('name', 'like', '%'.$request->q.'%');
-                  });
-            });
-        }
-        $orders = $query->latest()->get();
-        return view('admin.pesanan', compact('orders'));
+    public function index(Request $request)
+    {
+        $q = trim((string) $request->get('q'));
+        $status = strtolower((string) $request->get('status', 'all'));
+
+        $orders = Order::with('user')
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($q2) use ($q) {
+                    $q2->where('nama_proyek', 'like', "%{$q}%")
+                    ->orWhere('id', $q)
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$q}%"));
+                });
+            })
+            ->when($status !== 'all', function ($query) use ($status) {
+                // samakan kapitalisasi sebelum dibandingkan
+                $query->whereRaw('LOWER(status) = ?', [$status]);
+            })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString(); // supaya q & status tetap ada saat paginate
+
+        // kirim status aktif ke view (opsional)
+        return view('admin.pesanan', compact('orders', 'status'));
     }
-} 
+
+}
