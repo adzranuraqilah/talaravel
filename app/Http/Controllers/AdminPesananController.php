@@ -18,64 +18,35 @@ class AdminPesananController extends Controller
     public function update(Request $request, $id)
     {
         $order  = Order::findOrFail($id);
-        $action = strtolower((string) $request->status); // nilai dari tombol/admin
-        $final  = $order->status;
+        $status = strtolower($request->status);
 
-        // Normalisasi aksi admin -> status akhir
-        switch ($action) {
+        switch ($status) {
             case 'diterima':
+            case 'menunggu pembayaran':
+                $order->status = 'menunggu pembayaran';
+                break;
+
             case 'diproses':
-                // setelah customer bayar (menunggu konfirmasi), admin "diterima" => diproses
-                $final = 'diproses';
+                $order->status = 'diproses';
+                // Fallback: jika belum ada jadwal produksi, buat
+                $this->ensureProduksiExists($order);
                 break;
 
             case 'selesai':
-                $final = 'selesai';
+                $order->status = 'selesai';
                 break;
 
             case 'ditolak':
-                $final = 'ditolak';
-                break;
-
-            // opsi jika ingin mengembalikan status (jika kamu pakai tombolnya)
-            case 'menunggu konfirmasi':
-            case 'kembali-menunggu-konfirmasi':
-                $final = 'menunggu konfirmasi';
-                break;
-
-            case 'menunggu pembayaran':
-            case 'kembali-menunggu-pembayaran':
-                $final = 'menunggu pembayaran';
+                $order->status = 'ditolak';
                 break;
 
             default:
-                // jika admin mengirim status bebas, pakai apa adanya
-                if (!empty($action)) {
-                    $final = $action;
-                }
+                // biar fleksibel (misal: menunggu konfirmasi)
+                $order->status = $request->status;
         }
 
-        $order->status  = $final;
         $order->catatan = $request->catatan;
         $order->save();
-
-        // Otomatis buat jadwal produksi saat masuk "diproses"
-        if ($final === 'diproses') {
-            $existingProduksi = Produksi::where('order_id', $order->id)->first();
-
-            if (!$existingProduksi) {
-                $tanggalMulai   = Carbon::now();
-                $tanggalSelesai = $order->tenggat ? Carbon::parse($order->tenggat) : Carbon::now()->addDays(7);
-
-                Produksi::create([
-                    'nama_produksi'   => 'Produksi ' . ($order->nama_proyek ?? 'Pesanan #' . $order->id),
-                    'order_id'        => $order->id,
-                    'status'          => 'terjadwal',
-                    'tanggal_mulai'   => $tanggalMulai->format('Y-m-d'),
-                    'tanggal_selesai' => $tanggalSelesai->format('Y-m-d'),
-                ]);
-            }
-        }
 
         return redirect('/admin/pesanan')->with('success', 'Status pesanan berhasil diupdate!');
     }
@@ -94,13 +65,29 @@ class AdminPesananController extends Controller
                 });
             })
             ->when($status !== 'all', function ($query) use ($status) {
-                // samakan kapitalisasi sebelum dibandingkan
                 $query->whereRaw('LOWER(status) = ?', [$status]);
             })
             ->latest()
             ->paginate(20)
-            ->withQueryString(); // supaya q & status tetap ada saat paginate
+            ->withQueryString();
 
         return view('admin.pesanan', compact('orders', 'status'));
+    }
+
+    private function ensureProduksiExists(Order $order): void
+    {
+        $existing = Produksi::where('order_id', $order->id)->first();
+        if ($existing) return;
+
+        $tanggalMulai   = Carbon::now();
+        $tanggalSelesai = $order->tenggat ? Carbon::parse($order->tenggat) : Carbon::now()->addDays(7);
+
+        Produksi::create([
+            'nama_produksi'  => 'Produksi ' . ($order->nama_proyek ?? 'Pesanan #' . $order->id),
+            'order_id'       => $order->id,
+            'status'         => 'terjadwal',
+            'tanggal_mulai'  => $tanggalMulai->format('Y-m-d'),
+            'tanggal_selesai'=> $tanggalSelesai->format('Y-m-d'),
+        ]);
     }
 }

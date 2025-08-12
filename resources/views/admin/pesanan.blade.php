@@ -49,17 +49,16 @@
             // Daftar chip filter status
             $statusFilters = [
                 'all' => ['label' => 'Semua'],
-                // Tampilkan “Menunggu Konfirmasi” di UI. (Untuk kompatibilitas lama, controller boleh menangani 'menunggu' juga)
                 'menunggu konfirmasi' => ['label' => 'Menunggu Konfirmasi'],
                 'menunggu pembayaran' => ['label' => 'Menunggu Pembayaran'],
                 'diproses' => ['label' => 'Diproses'],
                 'selesai' => ['label' => 'Selesai'],
                 'ditolak' => ['label' => 'Ditolak'],
-                // 'antrian'              => ['label' => 'Antrian'],
+                // 'antrian'             => ['label' => 'Antrian'],
             ];
 
             $activeStatusRaw = strtolower(request('status', 'all'));
-            // Kalau ada link lama pakai ?status=menunggu, kita highlight chip “menunggu konfirmasi”
+            // Backward-compat: ?status=menunggu dianggap "menunggu konfirmasi"
             $activeStatus = $activeStatusRaw === 'menunggu' ? 'menunggu konfirmasi' : $activeStatusRaw;
 
             $baseQuery = request()->except('page', 'status'); // bawa query lain (mis. q) waktu ganti status
@@ -141,7 +140,6 @@
                                 </div>
 
                                 @php
-                                    // Mapping badge status
                                     $statusLabel = [
                                         'menunggu' => [
                                             'label' => 'Menunggu Konfirmasi',
@@ -169,6 +167,14 @@
 
                                 <span
                                     class="{{ $color }} text-xs font-semibold px-3 py-1 rounded">{{ $label }}</span>
+
+                                {{-- Tombol ke Jadwal Produksi saat sudah diproses (atau selesai) --}}
+                                @if (in_array($statusKey, ['diproses', 'selesai']))
+                                    <a href="/admin/produksi?order_id={{ $order->id }}"
+                                        class="px-3 py-1 text-xs rounded bg-purple-600 text-white hover:bg-purple-700">
+                                        Lihat Jadwal
+                                    </a>
+                                @endif
 
                                 <a href="/admin/pesanan/{{ $order->id }}" class="text-gray-500 hover:text-blue-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

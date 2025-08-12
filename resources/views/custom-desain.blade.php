@@ -1,9 +1,10 @@
 @vite('resources/js/app.js')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
 
 <script>
-    // kiriman dari controller
     window.riwayatPratinjau = @json($riwayatPratinjau ?? []);
 </script>
 
@@ -12,14 +13,14 @@
         <div class="flex">
             <!-- Sidebar -->
             <div class="bg-white w-40 py-8 flex flex-col items-center gap-8 rounded-l-2xl border border-gray-200">
-                <button @click="tab = 'produk'" :class="{ 'font-bold text-black': tab === 'produk' }"
+                <button @click="tab='produk'" :class="{ 'font-bold text-black': tab==='produk' }"
                     class="flex flex-col items-center gap-1 focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M4 4l4-2h8l4 2v2a2 2 0 01-2 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 01-2-2V4z" />
                     </svg>
                     <span>Jenis Produk</span>
                 </button>
-                <button @click="tab = 'warna'" :class="{ 'font-bold text-black': tab === 'warna' }"
+                <button @click="tab='warna'" :class="{ 'font-bold text-black': tab==='warna' }"
                     class="flex flex-col items-center gap-1 focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="10" />
@@ -29,7 +30,7 @@
                     </svg>
                     <span>Warna</span>
                 </button>
-                <button @click="tab = 'unggah'" :class="{ 'font-bold text-black': tab === 'unggah' }"
+                <button @click="tab='unggah'" :class="{ 'font-bold text-black': tab==='unggah' }"
                     class="flex flex-col items-center gap-1 focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M16 16v-4a4 4 0 00-8 0v4" />
@@ -38,11 +39,10 @@
                     </svg>
                     <span>Unggah</span>
                 </button>
-                <button @click="tab = 'teks'" :class="{ 'font-bold text-black': tab === 'teks' }"
+                <button @click="tab='teks'" :class="{ 'font-bold text-black': tab==='teks' }"
                     class="flex flex-col items-center gap-1 focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <text x="2" y="20" font-size="20" font-family="Arial" fill="black">Aa</text>
-                    </svg>
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><text
+                            x="2" y="20" font-size="20" font-family="Arial" fill="black">Aa</text></svg>
                     <span>Teks</span>
                 </button>
             </div>
@@ -52,43 +52,32 @@
                 <!-- Preview -->
                 <div id="preview-area"
                     class="relative w-96 h-[500px] flex items-center justify-center rounded-xl shadow mb-6 overflow-hidden [isolation:isolate]">
-                    <!-- BASE PNG (tekstur/garis kaos) -->
                     <img x-ref="baseImg" :src="baseSrc" alt="Base"
                         class="absolute inset-0 w-full h-full object-contain select-none pointer-events-none" />
 
-                    <!-- OVERLAY WARNA DIMASK KE BENTUK PRODUK -->
                     <div class="absolute inset-0 pointer-events-none" :style="colorMaskStyle"></div>
-                    <!-- Optional: highlight tipis biar tekstur makin muncul -->
                     <div class="absolute inset-0 pointer-events-none" :style="highlightMaskStyle"></div>
 
-                    <!-- Upload PNG/JPG -->
+                    <!-- Upload -->
                     <template x-if="uploadedImage">
                         <div class="absolute z-20"
-                            :style="`
-                                                                                                                                                left: calc(50% + ${uploadedX}px);
-                                                                                                                                                top: calc(50% + ${uploadedY}px);
-                                                                                                                                                width: ${uploadedWidth}px;
-                                                                                                                                                height: ${uploadedHeight}px;
-                                                                                                                                                transform: translate(-50%, -50%) rotate(${uploadedRotate}deg);
-                                                                                                                                            `"
-                            @mousedown.prevent="dragging = true; dragOffsetX = $event.clientX - uploadedX; dragOffsetY = $event.clientY - uploadedY;"
-                            @touchstart.prevent="dragging = true; dragOffsetX = $event.touches[0].clientX - uploadedX; dragOffsetY = $event.touches[0].clientY - uploadedY;">
-                            <img :src="uploadedImage" alt="Upload" class="w-full h-full object-contain cursor-move"
+                            :style="`left:calc(50% + ${uploadedX}px); top:calc(50% + ${uploadedY}px); width:${uploadedWidth}px; height:${uploadedHeight}px; transform:translate(-50%,-50%) rotate(${uploadedRotate}deg);`"
+                            @mousedown.prevent="dragging=true; dragOffsetX=$event.clientX-uploadedX; dragOffsetY=$event.clientY-uploadedY;"
+                            @touchstart.prevent="dragging=true; dragOffsetX=$event.touches[0].clientX-uploadedX; dragOffsetY=$event.touches[0].clientY-uploadedY;">
+                            <img :src="uploadedImage" class="w-full h-full object-contain cursor-move"
                                 draggable="false" style="pointer-events:none;" />
-                            <!-- resize handle -->
                             <div class="absolute right-0 bottom-0 w-6 h-6 bg-white rounded-full border border-gray-300 flex items-center justify-center cursor-se-resize z-30"
-                                @mousedown.prevent="resizing = true; resizeStartX = $event.clientX; resizeStartY = $event.clientY; resizeStartWidth = uploadedWidth; resizeStartHeight = uploadedHeight;"
-                                @touchstart.prevent="resizing = true; resizeStartX = $event.touches[0].clientX; resizeStartY = $event.touches[0].clientY; resizeStartWidth = uploadedWidth; resizeStartHeight = uploadedHeight;">
+                                @mousedown.prevent="resizing=true; resizeStartX=$event.clientX; resizeStartY=$event.clientY; resizeStartWidth=uploadedWidth; resizeStartHeight=uploadedHeight;"
+                                @touchstart.prevent="resizing=true; resizeStartX=$event.touches[0].clientX; resizeStartY=$event.touches[0].clientY; resizeStartWidth=uploadedWidth; resizeStartHeight=uploadedHeight;">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
                                     <path d="M15 19h4v-4" />
                                     <path d="M19 19l-6-6" />
                                 </svg>
                             </div>
-                            <!-- delete -->
                             <button
                                 class="absolute left-0 top-0 w-6 h-6 bg-white rounded-full border border-gray-300 flex items-center justify-center z-30"
-                                @click="uploadedImage = null" type="button">
+                                @click="uploadedImage=null" type="button">
                                 <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
                                     <path d="M6 6l12 12M6 18L18 6" />
@@ -97,27 +86,21 @@
                         </div>
                     </template>
 
-                    <!-- Teks -->
+                    <!-- Text -->
                     <template x-if="previewText">
                         <div class="absolute z-30 select-none"
-                            :style="`
-                                                                                                                                                left: calc(50% + ${textX}px);
-                                                                                                                                                top: calc(70% + ${textY}px);
-                                                                                                                                                width: ${textWidth}px;
-                                                                                                                                                height: ${textHeight}px;
-                                                                                                                                                transform: translate(-50%, -50%) rotate(${textRotate}deg);
-                                                                                                                                            `"
-                            @mousedown.prevent="textDragging = true; textDragOffsetX = $event.clientX - textX; textDragOffsetY = $event.clientY - textY;"
-                            @touchstart.prevent="textDragging = true; textDragOffsetX = $event.touches[0].clientX - textX; textDragOffsetY = $event.touches[0].clientY - textY;">
+                            :style="`left:calc(50% + ${textX}px); top:calc(70% + ${textY}px); width:${textWidth}px; height:${textHeight}px; transform:translate(-50%,-50%) rotate(${textRotate}deg);`"
+                            @mousedown.prevent="textDragging=true; textDragOffsetX=$event.clientX-textX; textDragOffsetY=$event.clientY-textY;"
+                            @touchstart.prevent="textDragging=true; textDragOffsetX=$event.touches[0].clientX-textX; textDragOffsetY=$event.touches[0].clientY-textY;">
                             <div class="w-full h-full flex items-center justify-center cursor-pointer"
-                                @dblclick="textEditing = true">
+                                @dblclick="textEditing=true">
                                 <template x-if="!textEditing">
                                     <span class="font-bold text-center break-words"
                                         :style="`font-size:${textFontSize}px;color:${textColor};`"
                                         x-text="previewText"></span>
                                 </template>
                                 <template x-if="textEditing">
-                                    <input type="text" x-model="previewText" @blur="textEditing = false"
+                                    <input type="text" x-model="previewText" @blur="textEditing=false"
                                         class="w-full h-full text-center font-bold text-black bg-white/80 border border-blue-400 rounded"
                                         autofocus />
                                 </template>
@@ -126,7 +109,7 @@
                     </template>
                 </div>
 
-                <!-- Controls -->
+                <!-- Controls rotate/upload text -->
                 <div class="flex flex-col items-center gap-2 mb-4" x-show="uploadedImage">
                     <label class="text-sm">Rotasi Gambar: <span x-text="uploadedRotate"></span>°</label>
                     <input type="range" min="-180" max="180" step="1" x-model="uploadedRotate"
@@ -138,17 +121,17 @@
                     <input type="range" min="-180" max="180" step="1" x-model="textRotate"
                         class="w-64">
                     <div class="flex items-center gap-4 mt-3">
-                        <button type="button" @click="textFontSize = Math.max(8, textFontSize - 2)"
+                        <button type="button" @click="textFontSize=Math.max(8,textFontSize-2)"
                             class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold shadow hover:bg-gray-300">-</button>
                         <span class="text-base font-semibold">Ukuran: <span x-text="textFontSize"></span></span>
-                        <button type="button" @click="textFontSize = Math.min(120, textFontSize + 2)"
+                        <button type="button" @click="textFontSize=Math.min(120,textFontSize+2)"
                             class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-bold shadow hover:bg-gray-300">+</button>
                     </div>
                 </div>
 
                 <!-- Form -->
                 <div class="w-full max-w-md">
-                    <div x-show="tab === 'produk'">
+                    <div x-show="tab==='produk'">
                         <label class="block mb-2 font-semibold">Jenis Produk</label>
                         <select x-model="produk" class="block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="kaos">Kaos</option>
@@ -159,41 +142,51 @@
                         </select>
                     </div>
 
-                    <div x-show="tab === 'warna'">
+                    <!-- WARNA -->
+                    <div x-show="tab==='warna'">
                         <label class="block mb-2 font-semibold">Pilih Warna Produk</label>
-                    </div>
 
-                    @if (isset($warnaBahan))
-                        <div x-show="tab === 'warna'">
+                        <!-- Picker ala screenshot -->
+                        <div class="mb-3">
+                            <div class="flex items-center gap-3">
+                                <button id="pickr-button" type="button" class="px-3 py-2 rounded border bg-white">
+                                    Pilih Warna (Custom)
+                                </button>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded border" :style="`background:${previewColor}`"></div>
+                                    <input type="text" x-model.lazy="previewColor"
+                                        class="w-32 px-2 py-1 border rounded text-sm" placeholder="#RRGGBB">
+                                </div>
+                            </div>
+                            <!-- Pickr akan menempel ke #pickr-button -->
+                        </div>
+
+                        @if (isset($warnaBahan))
+                            <!-- Swatch preset (opsional) -->
                             @foreach ($warnaBahan as $bahan => $warnas)
                                 <div class="mb-2">
                                     <div class="font-semibold text-sm mb-1">{{ $bahan }}</div>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach ($warnas as $warna)
-                                            <div class="text-center cursor-pointer"
-                                                x-on:click="previewColor = '{{ $warna['hex'] }}'">
+                                            <button type="button" class="text-center cursor-pointer"
+                                                x-on:click="previewColor='{{ $warna['hex'] }}'">
                                                 <div class="w-8 h-8 rounded-full border border-gray-300 inline-block mb-1"
                                                     style="background: {{ $warna['hex'] }}"></div>
                                                 <div class="text-[10px]">{{ $warna['nama'] }}</div>
-                                            </div>
+                                            </button>
                                         @endforeach
                                     </div>
                                 </div>
                             @endforeach
-                        </div>
-                    @else
-                        <div x-show="tab === 'warna'">
-                            <input type="color" x-model="previewColor"
-                                class="h-10 w-20 border-none p-0 bg-transparent" />
-                        </div>
-                    @endif
+                        @endif
+                    </div>
 
-                    <div x-show="tab === 'unggah'">
+                    <div x-show="tab==='unggah'">
                         <label class="block mb-2 font-semibold">Upload Gambar</label>
                         <input type="file" @change="updateImage($event)" class="block w-full" accept="image/*" />
                     </div>
 
-                    <div x-show="tab === 'teks'">
+                    <div x-show="tab==='teks'">
                         <label class="block mb-2 font-semibold">Teks Custom</label>
                         <input type="text" x-model="previewText" class="block w-full border rounded px-3 py-2"
                             placeholder="Masukkan teks..." />
@@ -215,12 +208,12 @@
             const STORAGE_BASE = @js(asset('storage'));
 
             return {
-                // UI state
+                // UI
                 tab: 'produk',
                 produk: 'kaos',
                 previewColor: '#00bcd4',
 
-                // base png sesuai struktur public/img/*-default.png
+                // base images
                 baseMap: {
                     kaos: @js(asset('img/kaos-default.png')),
                     kemeja: @js(asset('img/kemeja-default.png')),
@@ -228,10 +221,9 @@
                     jaket: @js(asset('img/jaket-default.png')),
                     almamater: @js(asset('img/almamater-default.png')),
                 },
-
                 baseSrc: @js(asset('img/kaos-default.png')),
 
-                // upload & text state
+                // upload & text
                 uploadedImage: null,
                 uploadedX: 0,
                 uploadedY: 0,
@@ -254,11 +246,6 @@
                 textEditing: false,
                 textWidth: 120,
                 textHeight: 32,
-                textResizing: false,
-                textResizeStartX: 0,
-                textResizeStartY: 0,
-                textResizeStartWidth: 120,
-                textResizeStartHeight: 32,
                 textDragging: false,
                 textDragOffsetX: 0,
                 textDragOffsetY: 0,
@@ -267,49 +254,85 @@
 
                 riwayatPratinjau: window.riwayatPratinjau || [],
 
-                // ======== MASK STYLES (biar background gak ikut ketint) ========
+                // ==== Mask style (recolor hanya gambar) ====
                 get colorMaskStyle() {
                     const src = this.baseSrc;
                     return `
-                        background:${this.previewColor};
-                        /* clip warna ke bentuk produk */
-                        -webkit-mask-image:url('${src}');
-                        mask-image:url('${src}');
-                        -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-                        -webkit-mask-position:center; mask-position:center;
-                        -webkit-mask-size:contain; mask-size:contain;
-                        mix-blend-mode:multiply;
-                        opacity:.9;
-                    `;
+            background:${this.previewColor};
+            -webkit-mask-image:url('${src}'); mask-image:url('${src}');
+            -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+            -webkit-mask-position:center; mask-position:center;
+            -webkit-mask-size:contain; mask-size:contain;
+            mix-blend-mode:multiply; opacity:.9;
+          `;
                 },
                 get highlightMaskStyle() {
                     const src = this.baseSrc;
                     return `
-                        background:white;
-                        -webkit-mask-image:url('${src}');
-                        mask-image:url('${src}');
-                        -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-                        -webkit-mask-position:center; mask-position:center;
-                        -webkit-mask-size:contain; mask-size:contain;
-                        mix-blend-mode:screen;
-                        opacity:.15;
-                    `;
+            background:white;
+            -webkit-mask-image:url('${src}'); mask-image:url('${src}');
+            -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+            -webkit-mask-position:center; mask-position:center;
+            -webkit-mask-size:contain; mask-size:contain;
+            mix-blend-mode:screen; opacity:.15;
+          `;
                 },
-                // ================================================================
 
+                // ======= Pickr instance =======
+                pickr: null,
+                initPickr() {
+                    // butonnya dipakai sebagai trigger (seperti screenshot)
+                    this.pickr = Pickr.create({
+                        el: '#pickr-button',
+                        theme: 'classic',
+                        default: this.previewColor,
+                        useAsButton: true,
+                        components: {
+                            preview: true,
+                            opacity: false,
+                            hue: true,
+                            interaction: {
+                                hex: true,
+                                rgba: true,
+                                input: true,
+                                save: true,
+                                cancel: true,
+                                clear: false
+                            }
+                        }
+                    });
+
+                    // sinkron dua arah
+                    this.pickr.on('change', (color) => {
+                        if (!color) return;
+                        this.previewColor = color.toHEXA().toString();
+                    });
+                    this.pickr.on('save', (color, instance) => {
+                        if (color) this.previewColor = color.toHEXA().toString();
+                        instance.hide();
+                    });
+                    // kalau previewColor berubah dari luar (klik swatch), update pickr
+                    this.$watch('previewColor', (val) => {
+                        if (this.pickr) {
+                            const cur = this.pickr.getColor();
+                            const curHex = cur ? cur.toHEXA().toString() : null;
+                            if (val && val !== curHex) this.pickr.setColor(val, true);
+                        }
+                    });
+                },
+
+                // ======= Helpers =======
                 get filteredRiwayat() {
                     return this.riwayatPratinjau.filter(i => i.jenis_produk === this.produk);
                 },
-
                 setPreviewFromRiwayat() {
                     if (this.filteredRiwayat.length > 0) {
-                        const foto = this.filteredRiwayat[0].foto_pratinjau; // relatif dari storage
+                        const foto = this.filteredRiwayat[0].foto_pratinjau;
                         this.uploadedImage = `${STORAGE_BASE}/${foto}`;
                     } else {
                         this.uploadedImage = null;
                     }
                 },
-
                 updateImage(e) {
                     const file = e.target.files?.[0];
                     if (!file) return;
@@ -317,23 +340,18 @@
                 },
 
                 async downloadPreview() {
-                    const preview = document.getElementById('preview-area');
-                    const rect = preview.getBoundingClientRect();
-
-                    const scale = 2; // kualitas export
-                    const W = Math.round(rect.width * scale);
-                    const H = Math.round(rect.height * scale);
-
+                    const rect = document.getElementById('preview-area').getBoundingClientRect();
+                    const scale = 2,
+                        W = Math.round(rect.width * scale),
+                        H = Math.round(rect.height * scale);
                     const canvas = document.createElement('canvas');
                     canvas.width = W;
                     canvas.height = H;
                     const ctx = canvas.getContext('2d');
 
-                    // 1) BASE
                     const base = await this.loadImg(this.baseSrc, true);
                     const dest = this.getContainRect(W, H, base.naturalWidth, base.naturalHeight);
 
-                    // buat layer warna dari base (pakai alpha base)
                     const tint = document.createElement('canvas');
                     tint.width = dest.w;
                     tint.height = dest.h;
@@ -343,19 +361,17 @@
                     tctx.fillStyle = this.previewColor;
                     tctx.fillRect(0, 0, dest.w, dest.h);
 
-                    // gambar ke kanvas final: warna dulu, lalu shading base (multiply)
                     ctx.drawImage(tint, dest.x, dest.y);
                     ctx.globalCompositeOperation = 'multiply';
                     ctx.drawImage(base, dest.x, dest.y, dest.w, dest.h);
                     ctx.globalCompositeOperation = 'source-over';
 
-                    // 2) GAMBAR UPLOAD (jika ada)
                     if (this.uploadedImage) {
-                        const up = await this.loadImg(this.uploadedImage, false); // blob: gak perlu CORS
-                        const w = this.uploadedWidth * scale;
-                        const h = this.uploadedHeight * scale;
-                        const cx = W / 2 + this.uploadedX * scale;
-                        const cy = H / 2 + this.uploadedY * scale;
+                        const up = await this.loadImg(this.uploadedImage, false);
+                        const w = this.uploadedWidth * scale,
+                            h = this.uploadedHeight * scale;
+                        const cx = W / 2 + this.uploadedX * scale,
+                            cy = H / 2 + this.uploadedY * scale;
                         ctx.save();
                         ctx.translate(cx, cy);
                         ctx.rotate(this.uploadedRotate * Math.PI / 180);
@@ -363,12 +379,11 @@
                         ctx.restore();
                     }
 
-                    // 3) TEKS (jika ada)
                     if (this.previewText) {
                         ctx.save();
                         ctx.translate(W / 2 + this.textX * scale, H * 0.70 + this.textY * scale);
                         ctx.rotate(this.textRotate * Math.PI / 180);
-                        ctx.font = `bold ${Math.round(this.textFontSize * scale)}px Arial`;
+                        ctx.font = `bold ${Math.round(this.textFontSize*scale)}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.fillStyle = this.textColor;
@@ -376,15 +391,12 @@
                         ctx.restore();
                     }
 
-                    // 4) DOWNLOAD
-                    const url = canvas.toDataURL('image/png');
                     const a = document.createElement('a');
-                    a.href = url;
+                    a.href = canvas.toDataURL('image/png');
                     a.download = 'desain.png';
                     a.click();
                 },
 
-                // helper: load image (asset pakai CORS anon, blob/local tidak)
                 loadImg(src, useCors = true) {
                     return new Promise((resolve, reject) => {
                         const img = new Image();
@@ -394,8 +406,6 @@
                         img.src = src;
                     });
                 },
-
-                // helper: hitung "contain" rect
                 getContainRect(W, H, iW, iH) {
                     const r = iW / iH,
                         R = W / H;
@@ -483,8 +493,11 @@
                         this.setPreviewFromRiwayat();
                     });
 
-                    // pertama kali
+                    // awal
                     this.setPreviewFromRiwayat();
+
+                    // inisialisasi Pickr setelah DOM siap
+                    this.$nextTick(() => this.initPickr());
                 },
             }
         }

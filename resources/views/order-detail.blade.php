@@ -4,22 +4,64 @@
             <div class="bg-white rounded-xl border border-gray-300 p-10 w-full max-w-xl mt-10 mb-10">
                 <a href="#" onclick="window.history.back(); return false;"
                     class="inline-block mb-4 text-blue-600 hover:underline">&larr; Kembali</a>
-                <h1 class="text-3xl font-bold text-center mb-2">Detail Pesanan</h1>
-                <div class="mb-4">
-                    <div class="font-bold text-lg mb-2">{{ $order->nama_proyek ?? '-' }}</div>
-                    <div class="mb-1">Status: <span class="font-semibold">{{ ucfirst($order->status) }}</span></div>
-                    <div class="mb-1">Tanggal Pengajuan:
+
+                <h1 class="text-3xl font-bold text-center mb-6">Detail Pesanan</h1>
+
+                @php
+                    $statusKey = strtolower($order->status ?? '');
+                    // normalisasi 'menunggu' => 'menunggu konfirmasi'
+                    if ($statusKey === 'menunggu') {
+                        $statusKey = 'menunggu konfirmasi';
+                    }
+
+                    $statusMap = [
+                        'menunggu konfirmasi' => [
+                            'label' => 'Menunggu Konfirmasi',
+                            'class' => 'bg-yellow-400 text-white',
+                        ],
+                        'menunggu pembayaran' => [
+                            'label' => 'Menunggu Pembayaran',
+                            'class' => 'bg-blue-600 text-white',
+                        ],
+                        'diproses' => ['label' => 'Pesanan Diproses', 'class' => 'bg-gray-700 text-white'],
+                        'selesai' => ['label' => 'Selesai', 'class' => 'bg-green-600 text-white'],
+                        'ditolak' => ['label' => 'Ditolak', 'class' => 'bg-red-500 text-white'],
+                    ];
+                    $statusLabel = $statusMap[$statusKey]['label'] ?? ucfirst($order->status ?? '-');
+                    $statusClass = $statusMap[$statusKey]['class'] ?? 'bg-gray-400 text-white';
+                @endphp
+
+                <div class="space-y-2 text-sm">
+                    <div class="font-bold text-lg">{{ $order->nama_proyek ?? '-' }}</div>
+
+                    <div class="flex items-center gap-2">
+                        <span>Status:</span>
+                        <span class="inline-block px-3 py-0.5 rounded text-xs font-semibold {{ $statusClass }}">
+                            {{ $statusLabel }}
+                        </span>
+                    </div>
+
+                    <div>
+                        Tanggal Pengajuan:
                         {{ $order->created_at ? $order->created_at->setTimezone('Asia/Jakarta')->format('d-m-Y H:i:s') . ' WIB' : '-' }}
                     </div>
-                    <div class="mb-1">Jumlah: {{ $order->kuantitas ?? '-' }} pcs</div>
-                    <div class="mb-1">Harga: Rp
-                        {{ $order->budget !== null ? number_format((float) $order->budget, 0, ',', '.') : '-' }}</div>
-                    <div class="mb-1">Tenggat:
-                        {{ $order->tenggat ? \Carbon\Carbon::parse($order->tenggat)->format('d-m-Y') : '-' }}</div>
-                    <div class="mb-1">Deskripsi: {{ $order->deskripsi ?? '-' }}</div>
+
+                    <div>Jumlah: {{ $order->kuantitas ?? '-' }} pcs</div>
+
+                    <div>
+                        Harga: Rp
+                        {{ $order->budget !== null ? number_format((float) $order->budget, 0, ',', '.') : '-' }}
+                    </div>
+
+                    <div>
+                        Tenggat: {{ $order->tenggat ? \Carbon\Carbon::parse($order->tenggat)->format('d-m-Y') : '-' }}
+                    </div>
+
+                    <div>Deskripsi: {{ $order->deskripsi ?? '-' }}</div>
 
                     @if ($order->desain)
-                        <div class="mb-1">Desain:
+                        <div class="pt-2">
+                            <div class="font-medium">Desain:</div>
                             @php
                                 $desainPath = $order->desain;
                                 $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($desainPath);
@@ -35,38 +77,42 @@
 
                             @if ($fileExists)
                                 @if ($isSvg)
-                                    <br><object type="image/svg+xml" data="{{ $fileUrl }}"
+                                    <object type="image/svg+xml" data="{{ $fileUrl }}"
                                         class="max-w-xs border rounded mt-2"></object>
                                 @elseif($isImage)
-                                    <br><img src="{{ $fileUrl }}" alt="Desain"
-                                        class="max-w-xs border rounded mt-2">
+                                    <img src="{{ $fileUrl }}" alt="Desain" class="max-w-xs border rounded mt-2">
                                 @else
-                                    <br><a href="{{ $fileUrl }}" target="_blank"
-                                        class="text-blue-600 underline">Download Desain</a>
+                                    <a href="{{ $fileUrl }}" target="_blank"
+                                        class="text-blue-600 underline mt-2 inline-block">
+                                        Download Desain
+                                    </a>
                                 @endif
                             @else
-                                <br><span class="text-red-500">File desain tidak ditemukan.</span>
+                                <span class="text-red-500">File desain tidak ditemukan.</span>
                             @endif
                         </div>
                     @endif
                 </div>
 
-                {{-- Tombol Bayar jika status menunggu pembayaran --}}
-                @if ($order->status == 'menunggu pembayaran')
-                    <form method="POST" action="#">
-                        @csrf
+                {{-- Aksi --}}
+                <div class="mt-6 space-y-3">
+                    @if ($statusKey === 'menunggu pembayaran')
                         <button type="button" onclick="payNow()"
-                            class="w-full bg-blue-900 text-white py-2 rounded-md font-semibold hover:bg-blue-800 transition">Bayar
-                            Sekarang (Midtrans)</button>
-                    </form>
-                @endif
+                            class="w-full bg-blue-900 text-white py-2 rounded-md font-semibold hover:bg-blue-800 transition">
+                            Bayar Sekarang (Midtrans)
+                        </button>
+                        <p class="text-xs text-gray-500 text-center">
+                            Setelah pembayaran berhasil, status akan berubah menjadi <b>Diproses</b> secara otomatis.
+                        </p>
+                    @endif
+                </div>
             </div>
         </div>
 
         <footer class="bg-gray-50 py-8 border-t border-gray-200">
             <div
                 class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-                <!-- Footer Content Omitted for Brevity (sama seperti sebelumnya) -->
+                <!-- isi footer -->
             </div>
             <div class="text-center text-gray-400 text-xs mt-4">Copyright Estetika.Os</div>
         </footer>
@@ -77,48 +123,50 @@
         src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
 
-
-    {{-- Script JS pembayaran --}}
-    @if ($order->status == 'menunggu pembayaran')
+    {{-- Script pembayaran --}}
+    @if ($statusKey === 'menunggu pembayaran')
         <script>
             function payNow() {
                 fetch('/api/payment/token', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({
                             order_id: '{{ $order->id }}',
-                            amount: '{{ $order->budget }}'
-                        })
+                            amount: '{{ (int) $order->budget }}'
+                        }),
+                        credentials: 'same-origin'
                     })
-                    .then(response => response.json())
+                    .then(r => r.json())
                     .then(data => {
-                        if (data.token) {
-                            snap.pay(data.token, {
-                                onSuccess: function(result) {
-                                    alert("Pembayaran berhasil!");
-                                    location.reload();
-                                },
-                                onPending: function(result) {
-                                    alert("Menunggu pembayaran.");
-                                    location.reload();
-                                },
-                                onError: function(result) {
-                                    alert("Pembayaran gagal.");
-                                },
-                                onClose: function() {
-                                    alert("Pembayaran dibatalkan.");
-                                }
-                            });
-                        } else {
-                            alert("Gagal mengambil Snap Token.");
+                        if (!data || !data.token) {
+                            alert('Gagal mengambil Snap Token.');
+                            return;
                         }
+                        window.snap.pay(data.token, {
+                            onSuccess: function() {
+                                alert('Pembayaran berhasil!');
+                                location.reload();
+                            },
+                            onPending: function() {
+                                alert('Menunggu pembayaran.');
+                                location.reload();
+                            },
+                            onError: function(err) {
+                                console.error(err);
+                                alert('Pembayaran gagal.');
+                            },
+                            onClose: function() {
+                                // user menutup popup
+                            }
+                        });
                     })
-                    .catch(error => {
-                        console.error(error);
-                        alert("Terjadi kesalahan.");
+                    .catch(err => {
+                        console.error(err);
+                        alert('Terjadi kesalahan saat memulai pembayaran.');
                     });
             }
         </script>

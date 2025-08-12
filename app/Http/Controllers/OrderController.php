@@ -20,24 +20,23 @@ class OrderController extends Controller
             session()->put('pending_form_type', 'personal');
             return redirect('/login');
         }
-        // Validasi data
+
         $validated = $request->validate([
             'nama_proyek' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kuantitas' => 'required|integer|min:24',
-            'tenggat' => 'required|date',
-            'desain' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'budget' => 'required|numeric|min:0',
+            'deskripsi'   => 'required|string',
+            'kuantitas'   => 'required|integer|min:24',
+            'tenggat'     => 'required|date',
+            'desain'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'budget'      => 'required|numeric|min:0',
         ]);
 
-        // Handle file upload
         if ($request->hasFile('desain')) {
             $validated['desain'] = $request->file('desain')->store('desain', 'public');
         }
 
-        $validated['tipe'] = 'personal';
+        $validated['tipe']    = 'personal';
         $validated['user_id'] = Auth::id();
-        $validated['status'] = 'menunggu pembayaran';
+        $validated['status']  = 'menunggu konfirmasi'; // <— sesuai alur baru
 
         Order::create($validated);
 
@@ -57,37 +56,35 @@ class OrderController extends Controller
             return redirect('/login');
         }
 
-        // ✅ Validasi data (tambah instansi)
         $validated = $request->validate([
-            'instansi' => 'nullable|string|max:255', // ✅ Tambahkan ini
+            'instansi'    => 'nullable|string|max:255',
             'nama_proyek' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kuantitas' => 'required|integer|min:24',
-            'tenggat' => 'required|date',
-            'budget' => 'required|string',
-            'desain' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'deskripsi'   => 'required|string',
+            'kuantitas'   => 'required|integer|min:24',
+            'tenggat'     => 'required|date',
+            'budget'      => 'required',
+            'desain'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        // ✅ Handle file upload
         if ($request->hasFile('desain')) {
             $validated['desain'] = $request->file('desain')->store('desain', 'public');
         }
 
-        // ✅ Tambah info tambahan
-        $validated['tipe'] = 'tender';
+        $validated['tipe']    = 'tender';
         $validated['user_id'] = Auth::id();
-        $validated['status'] = 'menunggu pembayaran';
+        $validated['status']  = 'menunggu konfirmasi'; // <— sesuai alur baru
 
-        // ✅ Simpan ke DB
         Order::create($validated);
 
         return redirect('/terima-kasih');
     }
 
-
     public function showDetail($id)
     {
-        $order = Order::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $order = Order::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
         return view('order-detail', compact('order'));
     }
 }
