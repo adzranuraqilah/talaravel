@@ -73,8 +73,10 @@
     </div>
 
     {{-- Midtrans Snap JS --}}
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    <script type="text/javascript"
+        src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
+
 
     {{-- Script JS pembayaran --}}
     @if ($order->status == 'menunggu pembayaran')

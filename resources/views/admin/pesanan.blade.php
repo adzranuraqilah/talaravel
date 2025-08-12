@@ -46,17 +46,23 @@
 
         <!-- FILTER STATUS -->
         @php
+            // Daftar chip filter status
             $statusFilters = [
                 'all' => ['label' => 'Semua'],
-                'menunggu' => ['label' => 'Menunggu'],
+                // Tampilkan “Menunggu Konfirmasi” di UI. (Untuk kompatibilitas lama, controller boleh menangani 'menunggu' juga)
+                'menunggu konfirmasi' => ['label' => 'Menunggu Konfirmasi'],
                 'menunggu pembayaran' => ['label' => 'Menunggu Pembayaran'],
                 'diproses' => ['label' => 'Diproses'],
                 'selesai' => ['label' => 'Selesai'],
                 'ditolak' => ['label' => 'Ditolak'],
-                // 'antrian'           => ['label' => 'Antrian'],
+                // 'antrian'              => ['label' => 'Antrian'],
             ];
-            $activeStatus = strtolower(request('status', 'all'));
-            $baseQuery = request()->except('page', 'status'); // bawa query lain (mis. q)
+
+            $activeStatusRaw = strtolower(request('status', 'all'));
+            // Kalau ada link lama pakai ?status=menunggu, kita highlight chip “menunggu konfirmasi”
+            $activeStatus = $activeStatusRaw === 'menunggu' ? 'menunggu konfirmasi' : $activeStatusRaw;
+
+            $baseQuery = request()->except('page', 'status'); // bawa query lain (mis. q) waktu ganti status
         @endphp
 
         <div class="mb-4">
@@ -86,7 +92,7 @@
         <div class="bg-white border border-gray-200 rounded-xl p-6">
             <div class="text-xl font-semibold mb-4">Daftar Pesanan</div>
 
-            @if (collect($orders)->isEmpty())
+            @if ($orders->isEmpty())
                 <div class="p-6 text-center border rounded-lg text-gray-500">
                     Belum ada pesanan untuk filter yang dipilih.
                 </div>
@@ -128,14 +134,20 @@
 
                             <div class="flex items-center gap-4">
                                 <div class="text-right">
-                                    <div class="font-semibold text-gray-700">Rp
-                                        {{ number_format((float) $order->budget, 0, ',', '.') }}</div>
+                                    <div class="font-semibold text-gray-700">
+                                        Rp {{ number_format((float) $order->budget, 0, ',', '.') }}
+                                    </div>
                                     <div class="text-xs text-gray-400">{{ $order->kuantitas ?? 0 }} pcs</div>
                                 </div>
 
                                 @php
+                                    // Mapping badge status
                                     $statusLabel = [
                                         'menunggu' => [
+                                            'label' => 'Menunggu Konfirmasi',
+                                            'color' => 'bg-yellow-400 text-white',
+                                        ],
+                                        'menunggu konfirmasi' => [
                                             'label' => 'Menunggu Konfirmasi',
                                             'color' => 'bg-yellow-400 text-white',
                                         ],
@@ -169,6 +181,11 @@
                             </div>
                         </div>
                     @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-6">
+                    {{ $orders->links() }}
                 </div>
             @endif
         </div>

@@ -15,8 +15,10 @@
                 <div class="text-xl font-bold">{{ $user->name ?? '-' }}</div>
                 <div class="text-gray-600">{{ $user->email ?? '-' }}</div>
                 <div class="text-gray-500 text-sm">{{ $user->phone ?? '-' }}</div>
+
                 <button class="mt-2 px-4 py-1 bg-[#1e335f] text-white rounded hover:bg-[#162547] transition"
                     onclick="document.getElementById('edit-form').classList.toggle('hidden')">Edit Akun</button>
+
                 <form method="POST" action="/logout" class="inline-block ml-2">
                     @csrf
                     <button type="submit"
@@ -81,10 +83,28 @@
             </div>
         </div>
 
-        <!-- Riwayat Pesanan -->
+        @php
+            // Map status => [label, warna]
+            function status_badge($status)
+            {
+                $map = [
+                    'menunggu' => ['Menunggu Konfirmasi', 'bg-yellow-400'],
+                    'menunggu konfirmasi' => ['Menunggu Konfirmasi', 'bg-yellow-400'],
+                    'menunggu pembayaran' => ['Menunggu Pembayaran', 'bg-blue-500'],
+                    'diproses' => ['Pesanan Diproses', 'bg-gray-700'],
+                    'ditolak' => ['Ditolak', 'bg-red-500'],
+                    'selesai' => ['Selesai', 'bg-green-600'],
+                ];
+                $key = strtolower($status ?? '');
+                return $map[$key] ?? ['-', 'bg-gray-400'];
+            }
+        @endphp
+
+        <!-- Riwayat Pesanan Instansi -->
         <div class="mb-4 text-lg font-semibold">Riwayat Pesanan Instansi</div>
         <div class="space-y-4">
             @forelse($riwayat->where('tipe', 'tender') as $order)
+                @php [$lbl, $bg] = status_badge($order->status); @endphp
                 <a href="/order/{{ $order->id }}"
                     class="block bg-gray-100 rounded-lg p-4 border hover:bg-blue-50 transition">
                     <div class="flex justify-between items-center mb-2">
@@ -100,32 +120,20 @@
                         {{ $order->budget && $order->budget > 0 ? number_format((float) $order->budget, 0, ',', '.') : '-' }}
                     </div>
                     <div class="text-sm text-gray-700">Detail Pesanan : {{ $order->deskripsi ?? '-' }}</div>
-                    @if ($order->status == 'menunggu')
-                        <span class="bg-yellow-400 text-white text-xs font-semibold px-3 py-1 rounded">Menunggu
-                            Konfirmasi</span>
-                    @elseif($order->status == 'menunggu pembayaran')
-                        <span class="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded">Menunggu
-                            Pembayaran</span>
-                    @elseif($order->status == 'diproses')
-                        <span class="bg-gray-700 text-white text-xs font-semibold px-3 py-1 rounded">Pesanan
-                            Diproses</span>
-                    @elseif($order->status == 'ditolak')
-                        <span class="bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded">Ditolak</span>
-                    @elseif($order->status == 'selesai')
-                        <span class="bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded">Selesai</span>
-                    @else
-                        <span class="bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded">-</span>
-                    @endif
+
+                    <span
+                        class="{{ $bg }} text-white text-xs font-semibold px-3 py-1 rounded">{{ $lbl }}</span>
                 </a>
             @empty
                 <p class="text-gray-500">Belum ada pesanan Instansi yang diajukan.</p>
             @endforelse
         </div>
 
-        <!-- Riwayat Personal -->
+        <!-- Riwayat Pesanan Personal -->
         <div class="mt-10 mb-4 text-lg font-semibold">Riwayat Pesanan Personal</div>
         <div class="space-y-4">
             @forelse($riwayat->where('tipe', 'personal') as $order)
+                @php [$lbl, $bg] = status_badge($order->status); @endphp
                 <a href="/order/{{ $order->id }}"
                     class="block bg-gray-100 rounded-lg p-4 border hover:bg-blue-50 transition">
                     <div class="flex justify-between items-center mb-2">
@@ -141,22 +149,9 @@
                         {{ $order->budget && $order->budget > 0 ? number_format((float) $order->budget, 0, ',', '.') : '-' }}
                     </div>
                     <div class="text-sm text-gray-700">Detail Pesanan : {{ $order->deskripsi ?? '-' }}</div>
-                    @if ($order->status == 'menunggu')
-                        <span class="bg-yellow-400 text-white text-xs font-semibold px-3 py-1 rounded">Menunggu
-                            Konfirmasi</span>
-                    @elseif($order->status == 'menunggu pembayaran')
-                        <span class="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded">Menunggu
-                            Pembayaran</span>
-                    @elseif($order->status == 'diproses')
-                        <span class="bg-gray-700 text-white text-xs font-semibold px-3 py-1 rounded">Pesanan
-                            Diproses</span>
-                    @elseif($order->status == 'ditolak')
-                        <span class="bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded">Ditolak</span>
-                    @elseif($order->status == 'selesai')
-                        <span class="bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded">Selesai</span>
-                    @else
-                        <span class="bg-gray-400 text-white text-xs font-semibold px-3 py-1 rounded">-</span>
-                    @endif
+
+                    <span
+                        class="{{ $bg }} text-white text-xs font-semibold px-3 py-1 rounded">{{ $lbl }}</span>
                 </a>
             @empty
                 <p class="text-gray-500">Belum ada pesanan personal.</p>
