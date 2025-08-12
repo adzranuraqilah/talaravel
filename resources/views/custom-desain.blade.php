@@ -155,6 +155,7 @@
                             <option value="kemeja">Kemeja</option>
                             <option value="hoodie">Hoodie</option>
                             <option value="jaket">Jaket</option>
+                            <option value="almamater">Almamater</option>
                         </select>
                     </div>
 
@@ -225,6 +226,7 @@
                     kemeja: @js(asset('img/kemeja-default.png')),
                     hoodie: @js(asset('img/hoodie-default.png')),
                     jaket: @js(asset('img/jaket-default.png')),
+                    almamater: @js(asset('img/almamater-default.png')),
                 },
 
                 baseSrc: @js(asset('img/kaos-default.png')),

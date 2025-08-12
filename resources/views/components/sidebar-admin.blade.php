@@ -19,7 +19,7 @@
             <li><a href="/admin/laporan" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 {{ Request::is('admin/laporan') ? 'bg-blue-50 text-blue-700' : 'text-gray-700' }}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 0h6"/></svg>Laporan</a></li>
             <li><a href="/admin/produksi" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 {{ Request::is('admin/produksi') ? 'bg-blue-50 text-blue-700' : 'text-gray-700' }}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17l4-4 4 4m0 0V3m0 14H4"/></svg>Jadwal Produksi</a></li>
             <li><a href="/admin/galeri" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 {{ Request::is('admin/galeri') ? 'bg-blue-50 text-blue-700' : 'text-gray-700' }}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 19l-5.5-5.5a2 2 0 00-2.8 0L7 19"/></svg>Galeri</a></li>
-            <li><a href="/admin/preview-history" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 {{ Request::is('admin/preview-history') ? 'bg-blue-50 text-blue-700' : 'text-gray-700' }}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Foto Pratinjau</a></li>
+            {{-- <li><a href="/admin/preview-history" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 {{ Request::is('admin/preview-history') ? 'bg-blue-50 text-blue-700' : 'text-gray-700' }}"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Foto Pratinjau</a></li> --}}
         </ul>
         <div class="text-xs font-semibold text-gray-400 mb-2">LAINNYA</div>
         <ul class="space-y-1">
@@ -43,4 +43,4 @@
             </button>
         </form>
     </div>
-</div> 
+</div>
