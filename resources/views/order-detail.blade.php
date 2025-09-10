@@ -9,7 +9,6 @@
 
                 @php
                     $statusKey = strtolower($order->status ?? '');
-                    // normalisasi 'menunggu' => 'menunggu konfirmasi'
                     if ($statusKey === 'menunggu') {
                         $statusKey = 'menunggu konfirmasi';
                     }
@@ -29,6 +28,21 @@
                     ];
                     $statusLabel = $statusMap[$statusKey]['label'] ?? ucfirst($order->status ?? '-');
                     $statusClass = $statusMap[$statusKey]['class'] ?? 'bg-gray-400 text-white';
+
+                    // Ringkasan payment (disimpan via webhook)
+                    $pi = (array) ($order->payment_info ?? []);
+                    $method = strtoupper($pi['channel'] ?? ($pi['payment_type'] ?? '-'));
+
+                    // Identitas ringkas buat ditampilkan
+                    $identitas = null;
+                    if (!empty($pi['va_last4']) && !empty($pi['bank'])) {
+                        $identitas = 'VA ' . strtoupper($pi['bank']) . ' • ****' . $pi['va_last4'];
+                    } elseif (!empty($pi['payment_code']) && !empty($pi['store'])) {
+                        $identitas = strtoupper($pi['store']) . ' • Code ' . $pi['payment_code'];
+                    } elseif (!empty($pi['masked_card'])) {
+                        $jenis = $pi['card_type'] ?? 'credit';
+                        $identitas = 'Kartu ' . $pi['masked_card'] . ' (' . strtoupper($jenis) . ')';
+                    }
                 @endphp
 
                 <div class="space-y-2 text-sm">
@@ -94,6 +108,43 @@
                     @endif
                 </div>
 
+                {{-- Info Pembayaran (ditarik dari orders.payment_info) --}}
+                <div class="mt-6">
+                    <h2 class="text-lg font-semibold mb-2">Info Pembayaran</h2>
+
+                    @if (!empty($pi))
+                        <div class="rounded-lg border border-gray-200 p-3 text-sm space-y-1">
+                            <div>Metode: <span class="font-semibold">{{ $method }}</span></div>
+                            @if ($identitas)
+                                <div>Identitas: {{ $identitas }}</div>
+                            @endif
+                            @if (!empty($order->midtrans_tx_status))
+                                <div>Status Midtrans: <span
+                                        class="font-semibold">{{ strtoupper($order->midtrans_tx_status) }}</span></div>
+                            @endif
+                            @if (!empty($pi['transaction_time']))
+                                <div>Waktu Transaksi:
+                                    {{ \Carbon\Carbon::parse($pi['transaction_time'])->setTimezone('Asia/Jakarta')->format('d-m-Y H:i') }}
+                                    WIB</div>
+                            @endif
+                            @if (!empty($pi['settlement_time']))
+                                <div>Waktu Settlement:
+                                    {{ \Carbon\Carbon::parse($pi['settlement_time'])->setTimezone('Asia/Jakarta')->format('d-m-Y H:i') }}
+                                    WIB</div>
+                            @endif
+                        </div>
+                    @else
+                        <div class="rounded-lg border border-gray-200 p-3 text-sm text-gray-600">
+                            Belum ada info metode pembayaran yang tercatat.
+                            @if ($statusKey === 'menunggu pembayaran')
+                                Silakan klik <b>Bayar Sekarang</b> di bawah. Setelah kamu memilih metode di Snap dan
+                                Midtrans
+                                mengirim notifikasi, info akan tampil di sini (sandbox bisa butuh simulasi pembayaran).
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
                 {{-- Aksi --}}
                 <div class="mt-6 space-y-3">
                     @if ($statusKey === 'menunggu pembayaran')
@@ -103,6 +154,10 @@
                         </button>
                         <p class="text-xs text-gray-500 text-center">
                             Setelah pembayaran berhasil, status akan berubah menjadi <b>Diproses</b> secara otomatis.
+                            @if (config('midtrans.is_production') ? false : true)
+                                <br>Sandbox: untuk VA/CStore, lakukan <i>simulate payment</i> di dashboard Midtrans agar
+                                status jadi <b>settlement</b>.
+                            @endif
                         </p>
                     @endif
                 </div>
@@ -160,8 +215,7 @@
                                 alert('Pembayaran gagal.');
                             },
                             onClose: function() {
-                                // user menutup popup
-                            }
+                                /* user menutup popup */ }
                         });
                     })
                     .catch(err => {
